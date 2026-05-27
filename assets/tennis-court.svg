@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680" role="img" aria-labelledby="title desc">
+  <title id="title">Tennisplatz</title>
+  <desc id="desc">Ein stilisierter Tennisplatz in Grün, Rot und Gelb.</desc>
+  <rect width="900" height="680" rx="46" fill="#ffffff"/>
+  <rect x="58" y="56" width="784" height="568" rx="36" fill="#16845a"/>
+  <path d="M58 512h784v76c0 20-16 36-36 36H94c-20 0-36-16-36-36z" fill="#be0214"/>
+  <g fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="138" y="126" width="624" height="428"/>
+    <path d="M450 126v428"/>
+    <path d="M138 340h624"/>
+    <path d="M260 126v428"/>
+    <path d="M640 126v428"/>
+    <path d="M260 340h380"/>
+  </g>
+  <path d="M138 340h624" stroke="#17211d" stroke-width="8" stroke-linecap="round" opacity=".42"/>
+  <circle cx="710" cy="162" r="42" fill="#f4c542"/>
+  <circle cx="710" cy="162" r="15" fill="#ffffff" opacity=".9"/>
+  <path d="M198 590c56-48 119-72 188-72 98 0 170 49 250 49 43 0 82-12 117-35" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+</svg>

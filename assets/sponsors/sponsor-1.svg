@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 280" role="img" aria-labelledby="title">
+  <title id="title">Sponsor Logo Platzhalter 1</title>
+  <rect width="520" height="280" rx="28" fill="#ffffff"/>
+  <rect x="34" y="34" width="452" height="212" rx="22" fill="#f3f7f4"/>
+  <circle cx="136" cy="140" r="48" fill="#259664"/>
+  <path d="M116 140h40M136 120v40" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+  <text x="214" y="128" fill="#17211d" font-family="Arial, sans-serif" font-size="34" font-weight="700">Sponsor</text>
+  <text x="214" y="166" fill="#63706b" font-family="Arial, sans-serif" font-size="24">Partner Logo</text>
+</svg>
