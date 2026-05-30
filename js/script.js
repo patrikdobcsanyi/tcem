@@ -93,6 +93,10 @@ if (newsImages.length > 0) {
 if (sponsorSlides.length > 1) {
   let activeSponsorIndex = 0;
 
+  sponsorSlides.forEach((slide, index) => {
+    slide.classList.toggle("is-active", index === activeSponsorIndex);
+  });
+
   setInterval(() => {
     sponsorSlides[activeSponsorIndex].classList.remove("is-active");
     activeSponsorIndex = (activeSponsorIndex + 1) % sponsorSlides.length;
