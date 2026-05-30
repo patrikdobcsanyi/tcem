@@ -1,6 +1,7 @@
 :root {
   --green: #259664;
   --green-dark: #0c4d36;
+  --green-light: #e8f5e9;
   --red: #be0214;
   --ink: #17211d;
   --muted: #63706b;
@@ -900,7 +901,7 @@ h3 {
 /* Subtle highlights using your red variable accenting or a light tint */
 .price-card.highlighted {
   border-color: var(--red);
-  background: linear-gradient(180deg, rgba(230, 57, 70, 0.03) 0%, #fff 100%);
+  background: #fff;
 }
 
 .price-card.highlighted h3 {
@@ -980,4 +981,116 @@ h3 {
   .pricing-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.premium-booking-card {
+  position: relative; /* Essential for absolute positioning of badges */
+  padding: 40px 32px 32px 32px !important; /* Generous inside breathing room */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+}
+
+.premium-booking-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(16, 25, 22, 0.05);
+}
+
+/* --- The Pill Badges --- */
+.card-badge {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 50px;
+}
+
+.badge-member {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+.badge-guest {
+  background: var(--red-light, rgba(230, 57, 70, 0.1));
+  color: var(--red, #e63946);
+}
+
+/* --- Main Info & Large Pricing Layout --- */
+.card-main-info {
+  margin-bottom: 24px;
+}
+
+.card-subtitle {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 4px 0 20px 0;
+  line-height: 1.4;
+}
+
+.price-display-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: #101916;
+}
+
+.price-display-wrapper .currency {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.price-display-wrapper .amount {
+  font-size: 2.75rem; /* Huge, modern display value */
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.price-display-wrapper .amount-green {
+  color: var(--green);
+  font-size: 2.75rem; /* Huge, modern display value */
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.price-display-wrapper .per-time {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.price-display-wrapper .label {
+  color: var(--ink);
+  font-size: 1.5;
+  font-weight: 600;
+  line-height: 1;
+  margin-left: 2px;
+  flex-grow: 1;
+}
+
+.padel-split-list.columns-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+.padel-split-list.columns-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+.price-divider {
+  border: 0;
+  border-top: 1px solid var(--line, #e2e8f0);
+  margin: 14px 0; /* Controls the exact vertical distance between the rows */
+  width: 100%;
 }
