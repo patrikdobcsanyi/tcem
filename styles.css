@@ -992,6 +992,7 @@ h3 {
   transition: transform 200ms ease, box-shadow 200ms ease;
   border: 1px solid var(--muted);
   border-radius: 8px;
+  background-color: #fff;
 }
 
 .premium-booking-card:hover {
