@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Galerie des TC Eschen-Mauren mit Bildern aus Clubleben, Interclub, Junioren, Events, Anlage und Padel." />
+  <title>Galerie | TC Eschen-Mauren</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div data-include="site-header" data-active="galerie"></div>
+
+  <main>
+    <section class="hero page-hero">
+      <div class="hero-content">
+        <p class="eyebrow">Galerie</p>
+        <h1>Momente aus dem Clubleben</h1>
+        <p class="hero-copy">Bilder von Interclub, Junioren, Events, Padel und allem, was den TC Eschen-Mauren auf und neben dem Platz ausmacht.</p>
+      </div>
+      <figure class="hero-visual" aria-label="Illustration eines Tennisplatzes">
+        <img src="assets/tennis-court.svg" alt="Stilisierter Tennisplatz in den Vereinsfarben" />
+      </figure>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Fotos</p>
+        <h2>Alle Bilder auf einen Blick</h2>
+        <p class="section-intro">Einblicke in Trainings, Begegnungen, Anlässe und das Clubleben beim TC Eschen-Mauren.</p>
+      </div>
+
+      <div class="gallery-filters" aria-label="Galerie filtern">
+        <button class="gallery-filter is-active" type="button" data-gallery-filter="all" aria-pressed="true">Alle</button>
+        <button class="gallery-filter" type="button" data-gallery-filter="interclub" aria-pressed="false">Interclub</button>
+        <button class="gallery-filter" type="button" data-gallery-filter="junioren" aria-pressed="false">Junioren</button>
+        <button class="gallery-filter" type="button" data-gallery-filter="events" aria-pressed="false">Events</button>
+        <button class="gallery-filter" type="button" data-gallery-filter="anlage" aria-pressed="false">Anlage</button>
+        <button class="gallery-filter" type="button" data-gallery-filter="padel" aria-pressed="false">Padel</button>
+        <button class="gallery-filter" type="button" data-gallery-filter="sportstueble" aria-pressed="false">Sportstüble</button>
+      </div>
+
+      <div class="gallery-grid">
+        <button class="gallery-item" type="button" data-category="events">
+          <img src="assets/news/50-years.png" alt="50 Jahre TC Eschen-Mauren Jubiläum" />
+          <span class="gallery-caption">50 Jahre TCEM</span>
+        </button>
+
+        <button class="gallery-item" type="button" data-category="interclub">
+          <img src="assets/vorstand/50-years.png" alt="Interclub Impression beim TC Eschen-Mauren" />
+          <span class="gallery-caption">Interclub</span>
+        </button>
+
+        <button class="gallery-item" type="button" data-category="junioren">
+          <img src="assets/news/50-years.png" alt="Junioren Anlass beim TC Eschen-Mauren" />
+          <span class="gallery-caption">Junioren</span>
+        </button>
+
+        <button class="gallery-item" type="button" data-category="anlage">
+          <img src="assets/vorstand/50-years.png" alt="Anlage des TC Eschen-Mauren" />
+          <span class="gallery-caption">Anlage</span>
+        </button>
+
+        <button class="gallery-item" type="button" data-category="padel">
+          <img src="assets/news/50-years.png" alt="Padel beim TC Eschen-Mauren" />
+          <span class="gallery-caption">Padel</span>
+        </button>
+
+        <button class="gallery-item" type="button" data-category="events">
+          <img src="assets/vorstand/50-years.png" alt="Clubevent beim TC Eschen-Mauren" />
+          <span class="gallery-caption">Clubevent</span>
+        </button>
+
+        <button class="gallery-item" type="button" data-category="sportstueble">
+          <img src="assets/vorstand/50-years.png" alt="Sportstüble beim TC Eschen-Mauren" />
+          <span class="gallery-caption">Sportstüble</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="site-footer"></div>
+
+  <script src="js/includes.js?v=20260603-1" defer></script>
+  <script src="js/script.js?v=20260603-4" defer></script>
+</body>
+</html>

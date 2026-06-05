@@ -5,43 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="TC Eschen-Mauren: Tennis, Padel, Training und Sportstüble in Schaanwald." />
   <title>TC Eschen-Mauren</title>
-  <link rel="stylesheet" href="styles.css?v=20260527-5" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <a class="brand" href="index.html" aria-label="TC Eschen-Mauren Startseite">
-      <span class="brand-mark">TC</span>
-      <span>
-        <strong>TC Eschen-Mauren</strong>
-        <small>Tennis & Padel in Schaanwald</small>
-      </span>
-    </a>
-
-    <button class="nav-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="site-nav">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
-      <a href="index.html" aria-current="page">Home</a>
-      <a href="verein.html">Verein</a>
-      <a href="#training">Training</a>
-      <a href="padel.html">Padel</a>
-      <a href="#plaetze">Plätze</a>
-      <a href="sportstueble.html">Sportstüble</a>
-      <div class="nav-dropdown">
-        <button class="nav-cta nav-dropdown-toggle" type="button" aria-expanded="false">
-          Platz buchen
-        </button>
-        <div class="nav-dropdown-menu">
-          <a href="https://apps.gotcourts.com/de/profile/club/tc-eschen-mauren">Aussenplätze</a>
-          <a href="https://tc-eschen-mauren.ebusy.de/court-module/2404">Hallenplätze</a>
-          <a href="https://tc-eschen-mauren.ebusy.de/court-module/3085">Padel</a>
-        </div>
-      </div>
-    </nav>
-  </header>
+  <div data-include="site-header" data-active="home"></div>
 
   <main>
     <section class="hero">
@@ -227,21 +194,9 @@
     </section>
   </main>
 
-  <footer class="site-footer" id="kontakt">
-    <div>
-      <strong>TC Eschen-Mauren</strong>
-      <p>Sportfeldstrasse 23<br />9486 Schaanwald<br />Liechtenstein</p>
-    </div>
-    <div>
-      <strong>Kontakt</strong>
-      <p><a href="mailto:office@tceschen-mauren.li">office@tceschen-mauren.li</a><br /><a href="mailto:verwaltung@tceschen-mauren.li">verwaltung@tceschen-mauren.li</a></p>
-    </div>
-    <div>
-      <strong>Rechtliches</strong>
-      <p><a href="impressum.html">Impressum</a><br /><a href="datenschutzerklaerung.html">Datenschutzerklärung</a></p>
-    </div>
-  </footer>
+  <div data-include="site-footer"></div>
 
-  <script src="js/script.js?v=20260531-1" defer></script>
+  <script src="js/includes.js?v=20260603-1" defer></script>
+  <script src="js/script.js?v=20260603-2" defer></script>
 </body>
 </html>

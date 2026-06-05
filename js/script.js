@@ -2,7 +2,9 @@ const header = document.querySelector(".site-header");
 const toggle = document.querySelector(".nav-toggle");
 const navLinks = document.querySelectorAll(".site-nav a");
 const dropdowns = document.querySelectorAll(".nav-dropdown");
-const newsImages = document.querySelectorAll(".news-card img");
+const lightboxImages = document.querySelectorAll(".news-card img, .gallery-item img");
+const galleryFilters = document.querySelectorAll(".gallery-filter");
+const galleryItems = document.querySelectorAll(".gallery-item");
 const sponsorSlides = document.querySelectorAll(".sponsor-rotator img");
 
 if (header && toggle) {
@@ -46,7 +48,45 @@ document.addEventListener("click", () => {
   });
 });
 
-if (newsImages.length > 0) {
+if (galleryFilters.length > 0 && galleryItems.length > 0) {
+  const galleryFilterBar = document.querySelector(".gallery-filters");
+  const applyGalleryFilter = (activeFilter) => {
+    const filterToApply = activeFilter || "all";
+
+    galleryFilters.forEach((button) => {
+      const isActive = button.dataset.galleryFilter === filterToApply;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    galleryItems.forEach((item) => {
+      const category = item.dataset.category || "";
+      const isVisible = filterToApply === "all" || category === filterToApply;
+
+      item.hidden = !isVisible;
+      item.classList.toggle("is-hidden", !isVisible);
+    });
+  };
+
+  galleryFilterBar?.addEventListener("click", (event) => {
+    const filterButton = event.target.closest(".gallery-filter");
+
+    if (!filterButton) {
+      return;
+    }
+
+    applyGalleryFilter(filterButton.dataset.galleryFilter || "all");
+  });
+
+  const requestedFilter = new URLSearchParams(window.location.search).get("filter");
+  const hasRequestedFilter = Array.from(galleryFilters).some((button) => button.dataset.galleryFilter === requestedFilter);
+
+  if (hasRequestedFilter) {
+    applyGalleryFilter(requestedFilter);
+  }
+}
+
+if (lightboxImages.length > 0) {
   const lightbox = document.createElement("div");
   lightbox.className = "image-lightbox";
   lightbox.setAttribute("role", "dialog");
@@ -67,7 +107,7 @@ if (newsImages.length > 0) {
     lightboxImage.alt = "";
   };
 
-  newsImages.forEach((image) => {
+  lightboxImages.forEach((image) => {
     image.addEventListener("click", () => {
       lightboxImage.src = image.src;
       lightboxImage.alt = image.alt;
