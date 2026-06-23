@@ -11,7 +11,7 @@
     headerMount.outerHTML = `
       <header class="site-header">
         <a class="brand" href="index.html" aria-label="TC Eschen-Mauren Startseite">
-          <span class="brand-mark">TC</span>
+          <img class="brand-logo" src="assets/logos/logo.png" alt="" aria-hidden="true" />
           <span>
             <strong>TC Eschen-Mauren</strong>
             <small>Tennis &amp; Padel in Schaanwald</small>

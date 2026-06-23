@@ -11,7 +11,7 @@
   <div data-include="site-header" data-active="home"></div>
 
   <main>
-    <section class="hero">
+    <section class="hero home-hero">
       <div class="hero-content">
         <p class="eyebrow">Tennisclub im Liechtensteiner Unterland</p>
         <h1>TC Eschen-Mauren</h1>
@@ -21,8 +21,8 @@
           <a class="button secondary" href="#kontakt">Kontakt</a>
         </div>
       </div>
-      <figure class="hero-visual" aria-label="Illustration eines Tennisplatzes">
-        <img src="assets/tennis-court.svg" alt="Stilisierter Tennisplatz in den Vereinsfarben" />
+      <figure class="hero-visual home-hero-image" aria-label="Clubanlage TC Eschen-Mauren">
+        <img src="assets/club/club_2.jpg" alt="Clubanlage des TC Eschen-Mauren" />
       </figure>
     </section>
 
@@ -74,6 +74,43 @@
             <p>Wir feiern alle zusammen 50 Jahre TC Eschen Mauren. Sei dabei beim nächsten Event am 11.06</p>
           </div>
         </article>
+      </div>
+    </section>
+
+    <section class="section" id="vereinskalender">
+      <div class="section-heading">
+        <p class="eyebrow">Vereinskalender</p>
+        <h2>Die nächsten Termine im Club.</h2>
+        <p class="section-intro">Ein kompakter Überblick über Anlässe, Spielbetrieb und wichtige Clubtermine.</p>
+      </div>
+
+      <div class="club-calendar-layout">
+        <div class="calendar-data" aria-hidden="true">
+          <div data-club-event data-date="2026-06-27" data-type="club" data-title="Clubabend" data-description="Gemeinsamer Abend im Sportstüble nach dem Spiel."></div>
+          <div data-club-event data-date="2026-07-04" data-type="match" data-title="Interclub Heimrunde" data-description="Heimspiele auf der Aussenanlage in Schaanwald."></div>
+          <div data-club-event data-date="2026-07-18" data-type="junior" data-title="Junioren Nachmittag" data-description="Training, Spiele und gemeinsamer Abschluss für den Nachwuchs."></div>
+          <div data-club-event data-date="2026-08-22" data-type="event" data-title="Sommerfest" data-description="Clubanlass für Mitglieder, Familien und Freunde des Vereins."></div>
+        </div>
+
+        <div>
+          <div class="club-calendar" data-calendar-events aria-label="Vereinskalender Termine"></div>
+          <button class="calendar-more-button" type="button" data-calendar-toggle hidden>Weitere Termine anzeigen</button>
+        </div>
+
+        <aside class="mini-calendar" aria-label="Kalenderübersicht">
+          <div class="mini-calendar-heading">
+            <div>
+              <span>Kalender</span>
+              <strong data-calendar-title>Juni 2026</strong>
+            </div>
+            <div class="mini-calendar-actions">
+              <button type="button" data-calendar-prev aria-label="Vorheriger Monat">‹</button>
+              <button type="button" data-calendar-next aria-label="Nächster Monat">›</button>
+            </div>
+          </div>
+
+          <div class="mini-calendar-grid" data-calendar-grid aria-label="Monatskalender"></div>
+        </aside>
       </div>
     </section>
 
@@ -196,7 +233,7 @@
 
   <div data-include="site-footer"></div>
 
-  <script src="js/includes.js?v=20260603-1" defer></script>
-  <script src="js/script.js?v=20260603-2" defer></script>
+  <script src="js/includes.js?v=20260621-1" defer></script>
+  <script src="js/script.js?v=20260621-5" defer></script>
 </body>
 </html>
