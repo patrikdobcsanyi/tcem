@@ -435,6 +435,47 @@ h3 {
   margin-bottom: clamp(28px, 5vw, 52px);
 }
 
+.section-with-image {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: start;
+}
+
+.section-with-image > div {
+  display: contents;
+  min-width: 0;
+}
+
+.section-with-image .section-heading {
+  grid-column: 1;
+  margin-bottom: 0;
+}
+
+.section-with-image > div > :not(.section-heading) {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.section-side-image {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 14px 32px rgba(16, 25, 22, 0.1);
+}
+
+.section-side-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .two-column {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.86fr);
@@ -1081,6 +1122,7 @@ h3 {
   .feature-grid,
   .split-list,
   .info-grid,
+  .section-with-image,
   .site-footer,
   .club-calendar-layout,
   .sponsors-layout,
@@ -1095,6 +1137,10 @@ h3 {
 
   .sponsor-rotator {
     min-height: 260px;
+  }
+
+  .section-side-image {
+    display: none;
   }
 }
 
