@@ -2,9 +2,8 @@ const header = document.querySelector(".site-header");
 const toggle = document.querySelector(".nav-toggle");
 const navLinks = document.querySelectorAll(".site-nav a");
 const dropdowns = document.querySelectorAll(".nav-dropdown");
-const lightboxImages = document.querySelectorAll(".news-card img, .gallery-item img");
 const galleryFilters = document.querySelectorAll(".gallery-filter");
-const galleryItems = document.querySelectorAll(".gallery-item");
+const galleryGrid = document.querySelector("[data-gallery-grid]");
 const sponsorSlides = document.querySelectorAll(".sponsor-rotator img");
 const calendarGrid = document.querySelector("[data-calendar-grid]");
 const calendarTitle = document.querySelector("[data-calendar-title]");
@@ -53,6 +52,57 @@ document.addEventListener("click", () => {
     dropdown.querySelector(".nav-dropdown-toggle")?.setAttribute("aria-expanded", "false");
   });
 });
+
+if (galleryGrid && Array.isArray(window.galleryImages) && window.galleryImages.length > 0) {
+  galleryGrid.innerHTML = "";
+
+  window.galleryImages.forEach((image) => {
+    const galleryItem = document.createElement("button");
+    const galleryImage = document.createElement("img");
+    const galleryCaption = document.createElement("span");
+
+    galleryItem.className = "gallery-item";
+    galleryItem.type = "button";
+    galleryItem.dataset.category = image.category || "";
+    galleryImage.src = image.src;
+    galleryImage.alt = image.alt || image.caption || "Galeriebild";
+    galleryImage.loading = "lazy";
+    galleryCaption.className = "gallery-caption";
+    galleryCaption.textContent = image.caption || "Galeriebild";
+    galleryItem.append(galleryImage, galleryCaption);
+    galleryGrid.append(galleryItem);
+  });
+}
+
+const galleryItems = document.querySelectorAll(".gallery-item");
+const lightboxImages = document.querySelectorAll(".news-card img, .gallery-item img");
+
+const setImageLoadingStates = (images) => {
+  images.forEach((image) => {
+    const markLoaded = () => {
+      image.classList.add("is-loaded");
+      image.classList.remove("has-error");
+    };
+    const markError = () => {
+      image.classList.add("has-error");
+    };
+
+    if (image.complete && image.naturalWidth > 0) {
+      markLoaded();
+      return;
+    }
+
+    if (image.complete) {
+      markError();
+      return;
+    }
+
+    image.addEventListener("load", markLoaded, { once: true });
+    image.addEventListener("error", markError, { once: true });
+  });
+};
+
+setImageLoadingStates(lightboxImages);
 
 if (galleryFilters.length > 0 && galleryItems.length > 0) {
   const galleryFilterBar = document.querySelector(".gallery-filters");

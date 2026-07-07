@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Galerie des TC Eschen-Mauren mit Bildern aus Clubleben, Interclub, Junioren, Events, Anlage und Padel." />
   <title>Galerie | TC Eschen-Mauren</title>
-  <link rel="stylesheet" href="styles.css?v=20260623-1" />
+  <link rel="stylesheet" href="styles.css?v=20260707-2" />
 </head>
 <body>
   <div data-include="site-header" data-active="galerie"></div>
 
   <main>
-    <section class="hero page-hero">
+    <section class="hero home-hero">
       <div class="hero-content">
         <p class="eyebrow">Galerie</p>
-        <h1>Momente aus dem Clubleben</h1>
+        <h2>Momente aus dem Clubleben</h2>
         <p class="hero-copy">Bilder von Interclub, Junioren, Events, Padel und allem, was den TC Eschen-Mauren auf und neben dem Platz ausmacht.</p>
       </div>
-      <figure class="hero-visual" aria-label="Illustration eines Tennisplatzes">
-        <img src="assets/tennis-court.svg" alt="Stilisierter Tennisplatz in den Vereinsfarben" />
+      <figure class="hero-visual home-hero-image" aria-label="Clubanlage TC Eschen-Mauren">
+        <img src="assets/club/club_1.jpeg" alt="Clubanlage des TC Eschen-Mauren" />
       </figure>
     </section>
 
@@ -39,7 +39,7 @@
         <button class="gallery-filter" type="button" data-gallery-filter="sportstueble" aria-pressed="false">Sportstüble</button>
       </div>
 
-      <div class="gallery-grid">
+      <div class="gallery-grid" data-gallery-grid>
         <button class="gallery-item" type="button" data-category="events">
           <img src="assets/news/50-years.png" alt="50 Jahre TC Eschen-Mauren Jubiläum" />
           <span class="gallery-caption">50 Jahre TCEM</span>
@@ -81,6 +81,7 @@
   <div data-include="site-footer"></div>
 
   <script src="js/includes.js?v=20260621-1" defer></script>
-  <script src="js/script.js?v=20260621-5" defer></script>
+  <script src="js/gallery-data.js?v=20260707-1" defer></script>
+  <script src="js/script.js?v=20260707-2" defer></script>
 </body>
 </html>
