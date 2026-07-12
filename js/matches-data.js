@@ -1,0 +1,33 @@
+window.matches = [
+  {
+    date: "2026-05-02",
+    label: "Interclub",
+    title: "Herren 1 vs. TC Vaduz",
+    description: "Heimspiel auf der Aussenanlage Schaanwald",
+    status: "Geplant",
+  },
+  {
+    date: "2026-05-09",
+    label: "Junioren Interclub",
+    labelClass: "junior",
+    title: "U15 Team vs. TC Triesen",
+    description: "Junioren-Spieltag beim TC Eschen-Mauren",
+    status: "Heim",
+  },
+  {
+    date: "2026-05-16",
+    label: "Interclub",
+    title: "Damen 1 vs. TC Balzers",
+    description: "Auswärtsspiel, Treffpunkt nach Absprache mit Captain",
+    status: "Auswärts",
+    statusClass: "away",
+  },
+  {
+    date: "2026-05-30",
+    label: "Team Challenge",
+    labelClass: "challenge",
+    title: "TCEM Team Challenge Runde 1",
+    description: "Clubinterne Begegnungen, Details folgen über die Spielleitung",
+    status: "Offen",
+  },
+];

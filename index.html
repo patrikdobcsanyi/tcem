@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="TC Eschen-Mauren: Tennis, Padel, Training und Sportstüble in Schaanwald." />
   <title>TC Eschen-Mauren</title>
-  <link rel="stylesheet" href="styles.css?v=20260707-2" />
+  <link rel="stylesheet" href="styles.css?v=20260712-1" />
+  <link rel="icon" type="image/png" href="assets/logos/alternate_logo.png" />
 </head>
 <body>
   <div data-include="site-header" data-active="home"></div>
@@ -47,34 +48,7 @@
         <h2>Aktuelles aus dem Club</h2>
       </div>
 
-      <div class="news-grid">
-        <article class="news-card">
-          <img src="assets/news/50-years.png" alt="50 Jahre TCEM" />
-          <div class="news-card-content">
-            <time datetime="2026-06-11">11. Juni 2026</time>
-            <h3>50 Jahre TCEM</h3>
-            <p>Wir feiern alle zusammen 50 Jahre TC Eschen Mauren. Sei dabei beim nächsten Event am 11.06</p>
-          </div>
-        </article>
-
-        <article class="news-card">
-          <img src="assets/news/50-years.png" alt="50 Jahre TCEM" />
-          <div class="news-card-content">
-            <time datetime="2026-06-11">11. Juni 2026</time>
-            <h3>50 Jahre TCEM</h3>
-            <p>Wir feiern alle zusammen 50 Jahre TC Eschen Mauren. Sei dabei beim nächsten Event am 11.06</p>
-          </div>
-        </article>
-
-        <article class="news-card">
-          <img src="assets/news/50-years.png" alt="50 Jahre TCEM" />
-          <div class="news-card-content">
-            <time datetime="2026-06-11">11. Juni 2026</time>
-            <h3>50 Jahre TCEM</h3>
-            <p>Wir feiern alle zusammen 50 Jahre TC Eschen Mauren. Sei dabei beim nächsten Event am 11.06</p>
-          </div>
-        </article>
-      </div>
+      <div class="news-grid" data-news-grid></div>
     </section>
 
     <section class="section" id="vereinskalender">
@@ -85,13 +59,6 @@
       </div>
 
       <div class="club-calendar-layout">
-        <div class="calendar-data" aria-hidden="true">
-          <div data-club-event data-date="2026-06-27" data-type="club" data-title="Clubabend" data-description="Gemeinsamer Abend im Sportstüble nach dem Spiel."></div>
-          <div data-club-event data-date="2026-07-04" data-type="match" data-title="Interclub Heimrunde" data-description="Heimspiele auf der Aussenanlage in Schaanwald."></div>
-          <div data-club-event data-date="2026-07-18" data-type="junior" data-title="Junioren Nachmittag" data-description="Training, Spiele und gemeinsamer Abschluss für den Nachwuchs."></div>
-          <div data-club-event data-date="2026-08-22" data-type="event" data-title="Sommerfest" data-description="Clubanlass für Mitglieder, Familien und Freunde des Vereins."></div>
-        </div>
-
         <div>
           <div class="club-calendar" data-calendar-events aria-label="Vereinskalender Termine"></div>
           <button class="calendar-more-button" type="button" data-calendar-toggle hidden>Weitere Termine anzeigen</button>
@@ -232,31 +199,7 @@
           <a class="button secondary" href="mailto:office@tceschen-mauren.li">Sponsor werden</a>
         </div>
 
-        <div class="sponsor-rotator" aria-label="Sponsoren Logos">
-          <img class="is-active" src="assets/sponsors/Architektur--Planungsbüro-Wolfgang-Meier-AG.jpg" alt="Sponsor Logo Platzhalter 2" />
-          <img src="assets/sponsors/Argus-Sicherheitsdienst-AG.jpeg" alt="Sponsor Logo Platzhalter 3" />
-          <img src="assets/sponsors/Basler-Versicherungen.jpg" alt="Sponsor Logo Platzhalter 4" />
-          <img src="assets/sponsors/Bauer-Maler-und-Gipser-Anstalt.jpg" alt="Sponsor Logo Platzhalter 5" />
-          <img src="assets/sponsors/Brauerei-Schützengarten-AG.png" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/BTA-Batliner-Thomas-Anstalt.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Der-Hausmeister-AG.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Gregor-Ott-AG.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/HSW-AG.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Inter-Inkasso-AG-1.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/jubilaeum-marxer-f12-green.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/LLB-AG.png" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Marxer-Gastrochem-AG.png" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Meier-Getraenke-AG.jpeg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Mueller-AG.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Peter-Kieber-und-Koch-Anstalt(1).jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Ritter-Weine-Logo-Vorlage.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Sponsoring-Defibrillator-2.png" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Thyssen-Krupp-Presta-AG.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/Tremaco.jpg" alt="Sponsor Logo Platzhalter 1" />
-          <img src="assets/sponsors/TV-Com-AG.png" alt="Sponsor Logo Platzhalter 1" />
-
-
-        </div>
+        <div class="sponsor-rotator" data-sponsor-rotator aria-label="Sponsoren Logos"></div>
       </div>
     </section>
   </main>
@@ -264,6 +207,9 @@
   <div data-include="site-footer"></div>
 
   <script src="js/includes.js?v=20260621-1" defer></script>
-  <script src="js/script.js?v=20260707-2" defer></script>
+  <script src="js/news-data.js?v=20260712-1" defer></script>
+  <script src="js/events-data.js?v=20260712-1" defer></script>
+  <script src="js/sponsors-data.js?v=20260712-1" defer></script>
+  <script src="js/script.js?v=20260712-8" defer></script>
 </body>
 </html>

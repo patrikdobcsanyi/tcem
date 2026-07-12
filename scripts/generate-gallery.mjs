@@ -5,6 +5,7 @@ const rootDir = process.cwd();
 const galleryDir = path.join(rootDir, "assets", "gallery");
 const outputFile = path.join(rootDir, "js", "gallery-data.js");
 const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
+const videoExtensions = new Set([".mp4", ".webm", ".mov"]);
 const defaultCategories = ["interclub", "junioren", "events", "anlage", "padel", "sportstueble"];
 
 const normalizeCategory = (name) => name
@@ -43,13 +44,18 @@ for (const folder of categoryFolders) {
   const files = await readdir(folderPath, { withFileTypes: true });
 
   for (const file of files) {
-    if (!file.isFile() || !imageExtensions.has(path.extname(file.name).toLowerCase())) {
+    const extension = path.extname(file.name).toLowerCase();
+    const isImage = imageExtensions.has(extension);
+    const isVideo = videoExtensions.has(extension);
+
+    if (!file.isFile() || (!isImage && !isVideo)) {
       continue;
     }
 
     const caption = toCaption(file.name);
     images.push({
       category,
+      type: isVideo ? "video" : "image",
       src: `assets/gallery/${folder.name}/${file.name}`,
       caption,
       alt: `${caption} beim TC Eschen-Mauren`,
@@ -68,4 +74,4 @@ images.sort((first, second) => {
 const fileContents = `window.galleryImages = ${JSON.stringify(images, null, 2)};\n`;
 await writeFile(outputFile, fileContents, "utf8");
 
-console.log(`Generated ${path.relative(rootDir, outputFile)} with ${images.length} image${images.length === 1 ? "" : "s"}.`);
+console.log(`Generated ${path.relative(rootDir, outputFile)} with ${images.length} media item${images.length === 1 ? "" : "s"}.`);

@@ -1,4 +1,4 @@
-Drop gallery images into folders named after the filter categories:
+Drop gallery images or short videos into folders named after the filter categories:
 
 - `interclub`
 - `junioren`
@@ -13,4 +13,7 @@ Then run:
 node scripts/generate-gallery.mjs
 ```
 
-The script updates `js/gallery-data.js`, and the gallery page renders those images automatically.
+Supported image formats: `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.avif`
+Supported video formats: `.mp4`, `.webm`, `.mov`
+
+The script updates `js/gallery-data.js`, and the gallery page renders those media files automatically.
