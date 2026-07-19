@@ -18,6 +18,7 @@ const teamLists = document.querySelectorAll("[data-team-list]");
 const padelOfferLists = document.querySelectorAll("[data-padel-offers]");
 const matchCalendar = document.querySelector("[data-match-calendar]");
 const gvProtocolList = document.querySelector("[data-gv-protocols]");
+const annualReportList = document.querySelector("[data-annual-reports]");
 
 if (header && toggle) {
   toggle.addEventListener("click", () => {
@@ -447,10 +448,14 @@ if (matchCalendar && Array.isArray(window.matches) && window.matches.length > 0)
   });
 }
 
-if (gvProtocolList && Array.isArray(window.gvProtocols) && window.gvProtocols.length > 0) {
-  gvProtocolList.innerHTML = "";
+const renderDocumentCards = (list, documents, defaultButtonText) => {
+  if (!list || !Array.isArray(documents) || documents.length === 0) {
+    return;
+  }
 
-  window.gvProtocols.forEach((protocol, index) => {
+  list.innerHTML = "";
+
+  documents.forEach((documentItem) => {
     const card = document.createElement("article");
     const content = document.createElement("div");
     const title = document.createElement("h2");
@@ -458,20 +463,23 @@ if (gvProtocolList && Array.isArray(window.gvProtocols) && window.gvProtocols.le
     const link = document.createElement("a");
 
     card.className = "document-card";
-    title.textContent = protocol.title || "";
-    subtitle.textContent = protocol.subtitle || "";
+    title.textContent = documentItem.title || "";
+    subtitle.textContent = documentItem.subtitle || "";
     content.append(title, subtitle);
 
     link.className = "button primary";
-    link.href = protocol.link || "#";
+    link.href = documentItem.link || "#";
     link.target = "_blank";
     link.rel = "noopener";
-    link.textContent = protocol.buttonText || "Protokoll öffnen";
+    link.textContent = documentItem.buttonText || defaultButtonText;
 
     card.append(content, link);
-    gvProtocolList.append(card);
+    list.append(card);
   });
-}
+};
+
+renderDocumentCards(gvProtocolList, window.gvProtocols, "Protokoll öffnen");
+renderDocumentCards(annualReportList, window.annualReports, "Jahresbericht öffnen");
 
 if (galleryFilters.length > 0 && galleryItems.length > 0) {
   const galleryFilterBar = document.querySelector(".gallery-filters");

@@ -207,3 +207,19 @@ Pro Eintrag muss nur `title`, `subtitle` und `link` angepasst werden:
   link: "https://alter-link-zum-protokoll.pdf",
 }
 ```
+
+## Jahresberichte aktualisieren
+
+Die Jahresberichte werden in `js/jahresberichte-data.js` gepflegt.
+
+Auf `jahresberichte.html` gibt es zusätzlich einen separaten Login-Hinweis mit Link zur alten Fairgate-Website.
+
+Pro Eintrag muss nur `title`, `subtitle` und `link` angepasst werden:
+
+```js
+{
+  title: "Jahresbericht 2025/2026",
+  subtitle: "49. Jahresbericht",
+  link: "https://alter-link-zum-jahresbericht.pdf",
+}
+```

@@ -64,7 +64,7 @@
         </div>
         <div>
           <strong>Intern</strong>
-          <p><a href="statuten.html">Statuten</a><br /><a href="gv-protokolle.html">GV-Protokolle</a></p>
+          <p><a href="statuten.html">Statuten</a><br /><a href="gv-protokolle.html">GV-Protokolle</a><br /><a href="jahresberichte.html">Jahresberichte</a></p>
         </div>
       </footer>
     `;
