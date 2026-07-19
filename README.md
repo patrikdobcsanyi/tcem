@@ -46,6 +46,21 @@ Beispiel:
 
 Die Verein-Seite rendert daraus automatisch die Karten und dupliziert sie für die Laufband-Animation.
 
+## Geschichte / Timeline aktualisieren
+
+Die Vereinsgeschichte wird in `js/timeline-data.js` gepflegt.
+
+Beispiel:
+
+```js
+{
+  year: "1975",
+  title: "Gründung des TC Eschen-Mauren",
+  text: "Kurzer Text zum Meilenstein.",
+  image: "assets/club/club_1.jpeg",
+}
+```
+
 ## News aktualisieren
 
 News-Einträge werden in `js/news-data.js` gepflegt.

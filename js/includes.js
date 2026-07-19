@@ -29,7 +29,7 @@
           <a href="${sectionHref("#training")}">Training</a>
           <a href="verein.html"${activeAttr("verein")}>Verein</a>
           <a href="padel.html"${activeAttr("padel")}>Padel</a>
-          <a href="spielbetrieb.html"${activeAttr("spielbetrieb")}>Spielbetrieb</a>
+          <a href="spielbetrieb.html?matchday=preview"${activeAttr("spielbetrieb")}>Spielbetrieb</a>
           <a href="sportstueble.html"${activeAttr("sportstueble")}>Sportstüble</a>
           <a href="gallery.html"${activeAttr("galerie")}>Galerie</a>
           <div class="nav-dropdown">

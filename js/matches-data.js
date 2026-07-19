@@ -1,6 +1,7 @@
 window.matches = [
   {
     date: "2026-05-02",
+    time: "10:00",
     label: "Interclub",
     title: "Herren 1 vs. TC Vaduz",
     description: "Heimspiel auf der Aussenanlage Schaanwald",
@@ -8,6 +9,7 @@ window.matches = [
   },
   {
     date: "2026-05-09",
+    time: "09:30",
     label: "Junioren Interclub",
     labelClass: "junior",
     title: "U15 Team vs. TC Triesen",
@@ -16,6 +18,7 @@ window.matches = [
   },
   {
     date: "2026-05-16",
+    time: "13:00",
     label: "Interclub",
     title: "Damen 1 vs. TC Balzers",
     description: "Auswärtsspiel, Treffpunkt nach Absprache mit Captain",
@@ -24,6 +27,7 @@ window.matches = [
   },
   {
     date: "2026-05-30",
+    time: "14:00",
     label: "Team Challenge",
     labelClass: "challenge",
     title: "TCEM Team Challenge Runde 1",

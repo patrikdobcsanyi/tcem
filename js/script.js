@@ -4,6 +4,8 @@ const navLinks = document.querySelectorAll(".site-nav a");
 const dropdowns = document.querySelectorAll(".nav-dropdown");
 const galleryFilters = document.querySelectorAll(".gallery-filter");
 const galleryGrid = document.querySelector("[data-gallery-grid]");
+const galleryStory = document.querySelector("[data-gallery-story]");
+const clubPulse = document.querySelector("[data-club-pulse]");
 const newsGrid = document.querySelector("[data-news-grid]");
 const sponsorRotator = document.querySelector("[data-sponsor-rotator]");
 const calendarGrid = document.querySelector("[data-calendar-grid]");
@@ -13,9 +15,11 @@ const calendarNext = document.querySelector("[data-calendar-next]");
 const calendarEventsList = document.querySelector("[data-calendar-events]");
 const calendarToggle = document.querySelector("[data-calendar-toggle]");
 const vorstandTrack = document.querySelector("[data-vorstand-track]");
+const clubTimeline = document.querySelector("[data-club-timeline]");
 const pricingGrid = document.querySelector("[data-pricing-grid]");
 const teamLists = document.querySelectorAll("[data-team-list]");
 const padelOfferLists = document.querySelectorAll("[data-padel-offers]");
+const matchdaySection = document.querySelector("[data-matchday]");
 const matchCalendar = document.querySelector("[data-match-calendar]");
 const gvProtocolList = document.querySelector("[data-gv-protocols]");
 const annualReportList = document.querySelector("[data-annual-reports]");
@@ -62,6 +66,10 @@ document.addEventListener("click", () => {
 });
 
 const parseDateKey = (dateKey) => {
+  if (typeof dateKey !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
+    return new Date(NaN);
+  }
+
   const [year, month, day] = dateKey.split("-").map(Number);
   return new Date(year, month - 1, day);
 };
@@ -91,6 +99,92 @@ const formatDisplayDate = (dateKey) => {
 
   return `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 };
+
+if (clubPulse) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const getNextDatedItem = (items) => {
+    if (!Array.isArray(items)) {
+      return null;
+    }
+
+    return [...items]
+      .filter((item) => {
+        const date = parseDateKey(item.date || "");
+        return !Number.isNaN(date.getTime()) && date >= today;
+      })
+      .sort((first, second) => parseDateKey(first.date) - parseDateKey(second.date))[0] || null;
+  };
+
+  const getLatestDatedItem = (items) => {
+    if (!Array.isArray(items)) {
+      return null;
+    }
+
+    return [...items]
+      .filter((item) => !Number.isNaN(parseDateKey(item.date || "").getTime()))
+      .sort((first, second) => parseDateKey(second.date) - parseDateKey(first.date))[0] || null;
+  };
+
+  const createPulseCard = ({ label, title, text, meta, href, cta }) => {
+    const card = document.createElement(href ? "a" : "article");
+    const labelElement = document.createElement("span");
+    const titleElement = document.createElement("strong");
+    const textElement = document.createElement("p");
+    const metaElement = document.createElement("small");
+
+    card.className = "club-pulse-card";
+    if (href) {
+      card.href = href;
+    }
+    labelElement.textContent = label;
+    titleElement.textContent = title;
+    textElement.textContent = text;
+    metaElement.textContent = cta || meta || "";
+
+    card.append(labelElement, titleElement, textElement, metaElement);
+    return card;
+  };
+
+  const nextEvent = getNextDatedItem(window.clubEvents);
+  const nextMatch = getNextDatedItem(window.matches);
+  const latestNews = getLatestDatedItem(window.newsItems);
+
+  clubPulse.innerHTML = "";
+  clubPulse.append(
+    createPulseCard({
+      label: "Nächster Termin",
+      title: nextEvent?.title || "Kalender folgt",
+      text: nextEvent?.description || "Neue Clubtermine werden laufend ergänzt.",
+      meta: nextEvent?.date ? formatDisplayDate(nextEvent.date) : "",
+      href: "#vereinskalender",
+      cta: nextEvent?.date ? formatDisplayDate(nextEvent.date) : "Zum Kalender",
+    }),
+    createPulseCard({
+      label: "Spielbetrieb",
+      title: nextMatch?.title || "Spielplan folgt",
+      text: nextMatch?.description || "Die nächsten Interclub- und Teamtermine erscheinen hier.",
+      meta: nextMatch?.date ? formatDisplayDate(nextMatch.date) : "",
+      href: "spielbetrieb.html?matchday=preview#interclub-kalender",
+      cta: nextMatch?.date ? formatDisplayDate(nextMatch.date) : "Zum Spielbetrieb",
+    }),
+    createPulseCard({
+      label: "Aktuell",
+      title: latestNews?.title || "News folgen",
+      text: latestNews?.text || "Neuigkeiten aus dem Club erscheinen direkt auf der Startseite.",
+      href: "#news",
+      cta: "Zu den News",
+    }),
+    createPulseCard({
+      label: "Jetzt buchen",
+      title: "Platz sichern",
+      text: "Aussenplätze, Halle und Padel sind online buchbar.",
+      href: "https://apps.gotcourts.com/de/profile/club/tc-eschen-mauren",
+      cta: "Buchung öffnen",
+    })
+  );
+}
 
 if (newsGrid && Array.isArray(window.newsItems) && window.newsItems.length > 0) {
   const sortedNews = [...window.newsItems].sort((first, second) => parseDateKey(second.date) - parseDateKey(first.date));
@@ -153,8 +247,154 @@ if (galleryGrid && Array.isArray(window.galleryImages) && window.galleryImages.l
   });
 }
 
+if (galleryStory) {
+  const mediaItems = Array.isArray(window.galleryImages) && window.galleryImages.length > 0
+    ? window.galleryImages
+    : Array.from(document.querySelectorAll(".gallery-item")).map((item) => {
+        const media = item.querySelector("img, video");
+        const caption = item.querySelector(".gallery-caption");
+
+        return {
+          type: media?.tagName === "VIDEO" ? "video" : "image",
+          src: media?.getAttribute("src") || "",
+          category: item.dataset.category || "",
+          caption: caption?.textContent || "",
+          alt: media?.getAttribute("alt") || caption?.textContent || "",
+        };
+      }).filter((media) => media.src);
+
+  const storyItems = mediaItems.slice(0, 6);
+  let activeStoryIndex = 0;
+  let storyTimer;
+
+  const categoryLabels = {
+    all: "Alle",
+    interclub: "Interclub",
+    junioren: "Junioren",
+    events: "Events",
+    anlage: "Anlage",
+    padel: "Padel",
+    sportstueble: "Sportstüble",
+  };
+
+  if (storyItems.length > 0) {
+    const stage = document.createElement("div");
+    const mediaLayer = document.createElement("div");
+    const content = document.createElement("div");
+    const eyebrow = document.createElement("span");
+    const title = document.createElement("h3");
+    const counter = document.createElement("small");
+    const controls = document.createElement("div");
+    const prevButton = document.createElement("button");
+    const nextButton = document.createElement("button");
+    const dots = document.createElement("div");
+    const slides = [];
+    const dotButtons = [];
+
+    galleryStory.innerHTML = "";
+    stage.className = "gallery-story-stage";
+    mediaLayer.className = "gallery-story-media";
+    content.className = "gallery-story-content";
+    eyebrow.className = "gallery-story-eyebrow";
+    counter.className = "gallery-story-counter";
+    controls.className = "gallery-story-controls";
+    dots.className = "gallery-story-dots";
+    prevButton.type = "button";
+    nextButton.type = "button";
+    prevButton.className = "gallery-story-arrow";
+    nextButton.className = "gallery-story-arrow";
+    prevButton.setAttribute("aria-label", "Vorheriges Highlight");
+    nextButton.setAttribute("aria-label", "Nächstes Highlight");
+    prevButton.textContent = "‹";
+    nextButton.textContent = "›";
+
+    const setActiveStoryItem = (nextIndex, directionOverride) => {
+      const previousStoryIndex = activeStoryIndex;
+      activeStoryIndex = (nextIndex + storyItems.length) % storyItems.length;
+      const item = storyItems[activeStoryIndex];
+      const direction = directionOverride || (activeStoryIndex >= previousStoryIndex ? 1 : -1);
+
+      slides.forEach((slide, index) => {
+        const offset = index - activeStoryIndex;
+        slide.classList.toggle("is-active", index === activeStoryIndex);
+        slide.style.setProperty("--story-slide-x", `${offset * 100}%`);
+        slide.style.setProperty("--story-slide-enter", `${direction * 100}%`);
+      });
+      dotButtons.forEach((button, index) => {
+        const isActive = index === activeStoryIndex;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      eyebrow.textContent = categoryLabels[item.category] || item.category || "Galerie";
+      title.textContent = item.caption || item.alt || "Clubmoment";
+      counter.textContent = `${String(activeStoryIndex + 1).padStart(2, "0")} / ${String(storyItems.length).padStart(2, "0")}`;
+    };
+
+    const restartStoryTimer = () => {
+      window.clearInterval(storyTimer);
+      storyTimer = window.setInterval(() => setActiveStoryItem(activeStoryIndex + 1, 1), 5200);
+    };
+
+    storyItems.forEach((item, index) => {
+      const slide = document.createElement("button");
+      const media = item.type === "video" ? document.createElement("video") : document.createElement("img");
+      const dot = document.createElement("button");
+
+      slide.className = "gallery-story-slide";
+      slide.type = "button";
+      slide.dataset.category = item.category || "";
+      slide.dataset.mediaType = item.type || "image";
+      media.src = item.src;
+
+      if (media.tagName === "VIDEO") {
+        media.autoplay = true;
+        media.muted = true;
+        media.loop = true;
+        media.playsInline = true;
+        media.preload = "metadata";
+        media.setAttribute("aria-label", item.alt || item.caption || "Galerievideo");
+      } else {
+        media.alt = item.alt || item.caption || "Galeriebild";
+        media.loading = index === 0 ? "eager" : "lazy";
+      }
+
+      dot.type = "button";
+      dot.className = "gallery-story-dot";
+      dot.setAttribute("aria-label", `Highlight ${index + 1} anzeigen`);
+      dot.setAttribute("aria-pressed", "false");
+      dot.addEventListener("click", () => {
+        setActiveStoryItem(index, index >= activeStoryIndex ? 1 : -1);
+        restartStoryTimer();
+      });
+
+      slide.append(media);
+      mediaLayer.append(slide);
+      dots.append(dot);
+      slides.push(slide);
+      dotButtons.push(dot);
+    });
+
+    prevButton.addEventListener("click", () => {
+      setActiveStoryItem(activeStoryIndex - 1, -1);
+      restartStoryTimer();
+    });
+    nextButton.addEventListener("click", () => {
+      setActiveStoryItem(activeStoryIndex + 1, 1);
+      restartStoryTimer();
+    });
+
+    content.append(eyebrow, title, counter);
+    controls.append(prevButton, dots, nextButton);
+    stage.append(mediaLayer, content, controls);
+    galleryStory.append(stage);
+    setActiveStoryItem(activeStoryIndex, 1);
+    restartStoryTimer();
+  }
+}
+
 const galleryItems = document.querySelectorAll(".gallery-item");
-const lightboxMedia = document.querySelectorAll(".news-card img, .gallery-item img, .gallery-item video");
+const lightboxMedia = document.querySelectorAll(".news-card img, .gallery-item img, .gallery-item video, .gallery-story-slide img, .gallery-story-slide video");
 
 const setMediaLoadingStates = (mediaItems) => {
   mediaItems.forEach((media) => {
@@ -246,6 +486,115 @@ if (vorstandTrack && Array.isArray(window.vorstandMembers) && window.vorstandMem
       vorstandTrack.append(createVorstandCard(member));
     });
   }
+}
+
+if (clubTimeline && Array.isArray(window.clubTimeline) && window.clubTimeline.length > 0) {
+  let activeTimelineIndex = 0;
+  let timelineTravelTimeout;
+  const historyYears = document.createElement("div");
+  const historyStage = document.createElement("div");
+  const historyImage = document.createElement("img");
+  const historyPanel = document.createElement("article");
+  const historyEyebrow = document.createElement("span");
+  const historyTitle = document.createElement("h3");
+  const historyText = document.createElement("p");
+  const historyCounter = document.createElement("small");
+  const historyPreviews = document.createElement("div");
+  const timelineControls = document.createElement("div");
+  const timelineButtons = [];
+  const previewButtons = [];
+
+  clubTimeline.innerHTML = "";
+  clubTimeline.classList.add("history-showcase");
+  historyYears.className = "history-years";
+  historyStage.className = "history-stage";
+  historyImage.className = "history-image";
+  historyPanel.className = "history-panel";
+  historyEyebrow.className = "history-eyebrow";
+  historyCounter.className = "history-counter";
+  historyPreviews.className = "history-previews";
+  timelineControls.className = "history-controls";
+
+  const setActiveTimelineItem = (activeIndex) => {
+    const activeItem = window.clubTimeline[activeIndex];
+    const progress = window.clubTimeline.length <= 1 ? 100 : (activeIndex / (window.clubTimeline.length - 1)) * 100;
+    const direction = activeIndex >= activeTimelineIndex ? 1 : -1;
+    const travel = activeIndex - activeTimelineIndex;
+
+    activeTimelineIndex = activeIndex;
+    window.clearTimeout(timelineTravelTimeout);
+    clubTimeline.classList.remove("is-travelling-forward", "is-travelling-backward");
+    clubTimeline.classList.add(direction === 1 ? "is-travelling-forward" : "is-travelling-backward");
+    timelineTravelTimeout = window.setTimeout(() => {
+      clubTimeline.classList.remove("is-travelling-forward", "is-travelling-backward");
+    }, 720);
+    clubTimeline.style.setProperty("--timeline-progress", progress);
+    clubTimeline.style.setProperty("--timeline-glow", `${progress}%`);
+    clubTimeline.style.setProperty("--timeline-shift", `${progress * -0.55}px`);
+    clubTimeline.style.setProperty("--timeline-shift-reverse", `${progress * 0.55}px`);
+    clubTimeline.style.setProperty("--timeline-ghost-shift", `${progress * 0.165}px`);
+    clubTimeline.style.setProperty("--timeline-detail-enter", `${direction * 58}px`);
+    clubTimeline.style.setProperty("--timeline-travel", travel);
+    clubTimeline.dataset.activeYear = activeItem.year || "";
+    historyStage.classList.remove("is-visible");
+
+    window.setTimeout(() => {
+      historyImage.src = activeItem.image || "assets/club/club_1.jpeg";
+      historyImage.alt = activeItem.title || "Meilenstein TC Eschen-Mauren";
+      historyEyebrow.textContent = activeItem.year || "";
+      historyTitle.textContent = activeItem.title || "";
+      historyText.textContent = activeItem.text || "";
+      historyCounter.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(window.clubTimeline.length).padStart(2, "0")}`;
+      historyStage.classList.add("is-visible");
+    }, 120);
+
+    timelineButtons.forEach((button, index) => {
+      const isActive = index === activeIndex;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    previewButtons.forEach((button, index) => {
+      const isActive = index === activeIndex;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+  };
+
+  window.clubTimeline.forEach((item, index) => {
+    const button = document.createElement("button");
+    const year = document.createElement("strong");
+    const preview = document.createElement("button");
+    const previewImage = document.createElement("img");
+    const previewLabel = document.createElement("span");
+
+    button.className = "timeline-entry";
+    button.type = "button";
+    button.setAttribute("aria-pressed", "false");
+    year.textContent = item.year || "";
+    button.append(year);
+    button.addEventListener("click", () => setActiveTimelineItem(index));
+    timelineButtons.push(button);
+    timelineControls.append(button);
+
+    preview.className = "history-preview";
+    preview.type = "button";
+    preview.setAttribute("aria-pressed", "false");
+    previewImage.src = item.image || "assets/club/club_1.jpeg";
+    previewImage.alt = "";
+    previewImage.loading = "lazy";
+    previewLabel.textContent = item.title || "";
+    preview.append(previewImage, previewLabel);
+    preview.addEventListener("click", () => setActiveTimelineItem(index));
+    previewButtons.push(preview);
+    historyPreviews.append(preview);
+  });
+
+  historyPanel.append(historyEyebrow, historyTitle, historyText, historyCounter);
+  historyStage.append(historyImage, historyPanel);
+  historyYears.append(timelineControls);
+  clubTimeline.append(historyYears, historyStage, historyPreviews);
+  setActiveTimelineItem(activeTimelineIndex);
 }
 
 if (pricingGrid && Array.isArray(window.membershipPrices) && window.membershipPrices.length > 0) {
@@ -446,6 +795,104 @@ if (matchCalendar && Array.isArray(window.matches) && window.matches.length > 0)
     card.append(time, info, status);
     matchCalendar.append(card);
   });
+}
+
+if (matchdaySection && Array.isArray(window.matches) && window.matches.length > 0) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const forceMatchdayPreview = new URLSearchParams(window.location.search).get("matchday") === "preview";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const upcomingMatches = [...window.matches]
+    .map((match) => ({
+      ...match,
+      dateObject: parseDateKey(match.date || ""),
+    }))
+    .filter((match) => !Number.isNaN(match.dateObject.getTime()) && match.dateObject >= today)
+    .sort((first, second) => first.dateObject - second.dateObject);
+
+  const previewMatches = forceMatchdayPreview && upcomingMatches.length === 0
+    ? [...window.matches]
+        .map((match) => ({
+          ...match,
+          dateObject: parseDateKey(match.date || ""),
+        }))
+        .filter((match) => !Number.isNaN(match.dateObject.getTime()))
+        .sort((first, second) => first.dateObject - second.dateObject)
+    : upcomingMatches;
+
+  if (previewMatches.length > 0) {
+    const nextMatchDate = previewMatches[0].dateObject;
+    const daysUntilMatchday = Math.round((nextMatchDate - today) / dayMs);
+    const nextDateKey = previewMatches[0].date;
+
+    if (forceMatchdayPreview || (daysUntilMatchday >= 0 && daysUntilMatchday <= 5)) {
+      const matchdayMatches = previewMatches
+        .filter((match) => match.date === nextDateKey)
+        .sort((first, second) => (first.time || "99:99").localeCompare(second.time || "99:99"));
+
+      const heading = document.createElement("div");
+      const eyebrow = document.createElement("p");
+      const title = document.createElement("h2");
+      const intro = document.createElement("p");
+      const dateBlock = document.createElement("time");
+      const matchList = document.createElement("div");
+      const cta = document.createElement("a");
+
+      matchdaySection.hidden = false;
+      matchdaySection.innerHTML = "";
+      heading.className = "matchday-heading";
+      eyebrow.className = "eyebrow";
+      eyebrow.textContent = daysUntilMatchday === 0 ? "Heute ist Matchday" : "Matchday steht an";
+      title.textContent = "Matchday beim TCEM";
+      intro.textContent = `${matchdayMatches.length} ${matchdayMatches.length === 1 ? "Begegnung" : "Begegnungen"} am nächsten Spieltag.`;
+
+      dateBlock.className = "matchday-date";
+      dateBlock.dateTime = nextDateKey || "";
+      dateBlock.innerHTML = `
+        <span>${Number.isNaN(nextMatchDate.getTime()) ? "" : weekdays[(nextMatchDate.getDay() + 6) % 7]}</span>
+        <strong>${Number.isNaN(nextMatchDate.getTime()) ? "" : String(nextMatchDate.getDate()).padStart(2, "0")}</strong>
+        <small>${Number.isNaN(nextMatchDate.getTime()) ? "" : monthNames[nextMatchDate.getMonth()].slice(0, 3)}</small>
+      `;
+
+      matchList.className = "matchday-list";
+      matchdayMatches.forEach((match) => {
+        const row = document.createElement("article");
+        const time = document.createElement("span");
+        const info = document.createElement("div");
+        const label = document.createElement("span");
+        const name = document.createElement("h3");
+        const description = document.createElement("p");
+        const status = document.createElement("span");
+
+        row.className = "matchday-row";
+        time.className = "matchday-time";
+        time.textContent = match.time || "TBD";
+        label.className = "match-label";
+        if (match.labelClass) {
+          label.classList.add(match.labelClass);
+        }
+        label.textContent = match.label || "";
+        name.textContent = match.title || "";
+        description.textContent = match.description || "";
+        info.append(label, name, description);
+        status.className = "match-status";
+        if (match.statusClass) {
+          status.classList.add(match.statusClass);
+        }
+        status.textContent = match.status || "";
+
+        row.append(time, info, status);
+        matchList.append(row);
+      });
+
+      cta.className = "button secondary";
+      cta.href = "#interclub-kalender";
+      cta.textContent = "Zum Matchkalender";
+      heading.append(eyebrow, title, intro, cta);
+      matchdaySection.append(heading, dateBlock, matchList);
+    }
+  }
 }
 
 const renderDocumentCards = (list, documents, defaultButtonText) => {
