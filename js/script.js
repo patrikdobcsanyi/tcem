@@ -17,6 +17,7 @@ const pricingGrid = document.querySelector("[data-pricing-grid]");
 const teamLists = document.querySelectorAll("[data-team-list]");
 const padelOfferLists = document.querySelectorAll("[data-padel-offers]");
 const matchCalendar = document.querySelector("[data-match-calendar]");
+const gvProtocolList = document.querySelector("[data-gv-protocols]");
 
 if (header && toggle) {
   toggle.addEventListener("click", () => {
@@ -443,6 +444,32 @@ if (matchCalendar && Array.isArray(window.matches) && window.matches.length > 0)
 
     card.append(time, info, status);
     matchCalendar.append(card);
+  });
+}
+
+if (gvProtocolList && Array.isArray(window.gvProtocols) && window.gvProtocols.length > 0) {
+  gvProtocolList.innerHTML = "";
+
+  window.gvProtocols.forEach((protocol, index) => {
+    const card = document.createElement("article");
+    const content = document.createElement("div");
+    const title = document.createElement("h2");
+    const subtitle = document.createElement("p");
+    const link = document.createElement("a");
+
+    card.className = "document-card";
+    title.textContent = protocol.title || "";
+    subtitle.textContent = protocol.subtitle || "";
+    content.append(title, subtitle);
+
+    link.className = "button primary";
+    link.href = protocol.link || "#";
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = protocol.buttonText || "Protokoll öffnen";
+
+    card.append(content, link);
+    gvProtocolList.append(card);
   });
 }
 

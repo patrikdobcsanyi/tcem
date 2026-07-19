@@ -62,6 +62,10 @@
           <strong>Rechtliches</strong>
           <p><a href="impressum.html">Impressum</a><br /><a href="datenschutzerklaerung.html">Datenschutzerklärung</a></p>
         </div>
+        <div>
+          <strong>Intern</strong>
+          <p><a href="statuten.html">Statuten</a><br /><a href="gv-protokolle.html">GV-Protokolle</a></p>
+        </div>
       </footer>
     `;
   }

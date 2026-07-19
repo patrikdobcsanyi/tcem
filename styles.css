@@ -533,7 +533,7 @@ h3 {
 
 .site-footer {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 28px;
   padding: 42px clamp(18px, 6vw, 84px);
   color: #d7e6df;
@@ -584,6 +584,52 @@ h3 {
 .legal-content a {
   color: var(--green-dark);
   font-weight: 700;
+}
+
+.document-actions {
+  display: grid;
+  gap: 18px;
+}
+
+.document-login-note {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 22px;
+  padding: 22px;
+  background: rgba(37, 150, 100, 0.09);
+  border: 1px solid rgba(37, 150, 100, 0.22);
+  border-radius: 8px;
+}
+
+.document-login-note h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.document-login-note p {
+  margin: 0;
+}
+
+.document-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 22px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.document-card h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.document-card p {
+  margin: 0;
 }
 
 .section-intro {
@@ -1131,7 +1177,9 @@ h3 {
   }
 
   .team-card,
-  .team-card dl {
+  .team-card dl,
+  .document-login-note,
+  .document-card {
     grid-template-columns: 1fr;
   }
 

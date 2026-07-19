@@ -3,8 +3,6 @@
 - Make phones and emails clickable
 - Insert Sponsoren images
 - Einwilligungserklärung
-- Statuten
-- GV-Berichte
 
 - Padel site
 
@@ -184,3 +182,28 @@ Beispiel:
 ```
 
 Die Gruppen `material`, `single`, `blocks` und `season` werden automatisch in die passenden Abschnitte auf `padel.html` gerendert.
+
+## Statuten PDFs aktualisieren
+
+Die Statuten-Seite verlinkt auf zwei PDF-Dateien im Ordner `assets/documents/`:
+
+- `statuten-tc-eschen-mauren.pdf`
+- `statuten-tennishalle-unterland.pdf`
+
+Wenn die Dateien anders heissen sollen, die Links in `statuten.html` entsprechend anpassen.
+
+## GV-Protokolle aktualisieren
+
+Die GV-Protokolle werden in `js/gv-protokolle-data.js` gepflegt.
+
+Auf `gv-protokolle.html` gibt es zusätzlich einen separaten Login-Hinweis mit Link zur alten Fairgate-Website.
+
+Pro Eintrag muss nur `title`, `subtitle` und `link` angepasst werden:
+
+```js
+{
+  title: "GV-Protokoll 2025",
+  subtitle: "49. Protokoll",
+  link: "https://alter-link-zum-protokoll.pdf",
+}
+```
