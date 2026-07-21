@@ -10,6 +10,9 @@
   --soft: #f3f7f4;
   --sun: #f4c542;
   --shadow: 0 24px 70px rgba(23, 33, 29, 0.13);
+  --court-line-soft: rgba(37, 150, 100, 0.11);
+  --court-line-warm: rgba(190, 2, 20, 0.055);
+  --ball-mark: rgba(244, 197, 66, 0.34);
   color-scheme: light;
 }
 
@@ -479,6 +482,29 @@ h3 {
   animation: pulse-dot 1.9s ease-out infinite;
 }
 
+.club-pulse-card::after {
+  position: absolute;
+  right: -18px;
+  bottom: -18px;
+  width: 130px;
+  height: 76px;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.26)) 0 0 / 100% 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.26)) 0 100% / 100% 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.26)) 0 0 / 1px 100% no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.26)) 100% 0 / 1px 100% no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) 0 50% / 100% 1px no-repeat;
+  opacity: 0.55;
+}
+
+.club-pulse-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .club-pulse-card span {
   color: #dbff7d;
 }
@@ -538,7 +564,9 @@ h3 {
 }
 
 .section.muted {
-  background: var(--soft);
+  background:
+    linear-gradient(90deg, transparent 0 15%, rgba(37, 150, 100, 0.035) 15% 15.15%, transparent 15.15% 50%, rgba(37, 150, 100, 0.035) 50% 50.15%, transparent 50.15% 84.85%, rgba(37, 150, 100, 0.035) 84.85% 85%, transparent 85%),
+    var(--soft);
 }
 
 .section.accent {
@@ -630,10 +658,61 @@ h3 {
 .feature-grid article,
 .split-list article,
 .info-grid article {
+  position: relative;
+  overflow: hidden;
   padding: 24px;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
+}
+
+.stats div > *,
+.feature-grid article > *,
+.split-list article > *,
+.info-grid article > * {
+  position: relative;
+  z-index: 1;
+}
+
+.stats div::before,
+.feature-grid article::before,
+.split-list article::before,
+.info-grid article::before,
+.team-card::before,
+.match-card::before,
+.mini-calendar::before,
+.price-card::before,
+.info-block::before,
+.premium-booking-card::before,
+.document-card::before,
+.document-login-note::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle at calc(100% - 26px) 28px, var(--ball-mark) 0 8px, transparent 9px),
+    radial-gradient(circle at calc(100% - 26px) 28px, transparent 0 12px, rgba(244, 197, 66, 0.22) 13px 14px, transparent 15px),
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) calc(100% - 94px) calc(100% - 30px) / 1px 70px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) calc(100% - 54px) calc(100% - 30px) / 1px 70px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) calc(100% - 128px) calc(100% - 54px) / 108px 1px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) calc(100% - 128px) calc(100% - 82px) / 108px 1px no-repeat,
+    linear-gradient(135deg, transparent 58%, var(--court-line-warm));
+  opacity: 0.9;
+}
+
+.feature-grid article:nth-child(3n+2)::before,
+.split-list article:nth-child(3n+2)::before,
+.info-grid article:nth-child(3n+2)::before,
+.team-card:nth-child(2n)::before,
+.match-card:nth-child(2n)::before,
+.price-card:nth-child(2n)::before {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 13px, rgba(37, 150, 100, 0.055) 13px 14px),
+    repeating-linear-gradient(0deg, transparent 0 13px, rgba(37, 150, 100, 0.04) 13px 14px),
+    radial-gradient(circle at calc(100% - 28px) 30px, var(--ball-mark) 0 7px, transparent 8px);
+  opacity: 0.72;
 }
 
 .stats strong {
@@ -717,15 +796,22 @@ h3 {
 }
 
 .document-login-note {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 20px;
   align-items: center;
+  overflow: hidden;
   margin-bottom: 22px;
   padding: 22px;
   background: rgba(37, 150, 100, 0.09);
   border: 1px solid rgba(37, 150, 100, 0.22);
   border-radius: 8px;
+}
+
+.document-login-note > * {
+  position: relative;
+  z-index: 1;
 }
 
 .document-login-note h2 {
@@ -738,14 +824,21 @@ h3 {
 }
 
 .document-card {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 20px;
   align-items: center;
+  overflow: hidden;
   padding: 22px;
   background: var(--soft);
   border: 1px solid var(--line);
   border-radius: 8px;
+}
+
+.document-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .document-card h2 {
@@ -1039,15 +1132,22 @@ h3 {
 }
 
 .team-card {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1fr);
   gap: clamp(18px, 4vw, 42px);
   align-items: start;
+  overflow: hidden;
   padding: 24px;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: 0 12px 28px rgba(16, 25, 22, 0.06);
+}
+
+.team-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .team-card h3 {
@@ -1265,15 +1365,22 @@ h3 {
 }
 
 .match-card {
+  position: relative;
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr) auto;
   gap: clamp(16px, 3vw, 28px);
   align-items: center;
+  overflow: hidden;
   padding: 18px;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: 0 12px 28px rgba(16, 25, 22, 0.06);
+}
+
+.match-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .match-date {
@@ -1444,12 +1551,19 @@ h3 {
 }
 
 .mini-calendar {
+  position: relative;
   display: grid;
   gap: 18px;
+  overflow: hidden;
   padding: 18px;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
+}
+
+.mini-calendar > * {
+  position: relative;
+  z-index: 1;
 }
 
 .mini-calendar-heading span,
@@ -1903,8 +2017,33 @@ h3 {
 .news-card-content {
   position: relative;
   z-index: 1;
+  overflow: hidden;
   padding: 20px;
   background: #fff;
+}
+
+.news-card-content::after {
+  position: absolute;
+  right: -18px;
+  bottom: -22px;
+  width: 126px;
+  height: 82px;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle at 86px 24px, var(--ball-mark) 0 8px, transparent 9px),
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) 18px 12px / 90px 1px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) 18px 70px / 90px 1px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) 18px 12px / 1px 58px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) 108px 12px / 1px 58px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) 63px 12px / 1px 58px no-repeat,
+    linear-gradient(var(--court-line-soft), var(--court-line-soft)) 18px 41px / 90px 1px no-repeat;
+  opacity: 0.7;
+}
+
+.news-card-content > * {
+  position: relative;
+  z-index: 1;
 }
 
 .news-card time {
@@ -2128,6 +2267,8 @@ h3 {
 }
 
 .price-card {
+  position: relative;
+  overflow: hidden;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -2136,6 +2277,11 @@ h3 {
   flex-direction: column;
   justify-content: space-between;
   transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.price-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .price-card:hover {
@@ -2186,11 +2332,18 @@ h3 {
 }
 
 .info-block {
+  position: relative;
   flex: 1;
+  overflow: hidden;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 30px;
+}
+
+.info-block > * {
+  position: relative;
+  z-index: 1;
 }
 
 .info-block h3 {
@@ -2260,10 +2413,16 @@ h3 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
   transition: transform 200ms ease, box-shadow 200ms ease;
   border: 1px solid var(--muted);
   border-radius: 8px;
   background-color: #fff;
+}
+
+.premium-booking-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .premium-booking-card:hover {
