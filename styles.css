@@ -425,6 +425,36 @@ h3 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.sportstueble-pulse {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 34px);
+  align-items: stretch;
+  padding: 24px clamp(18px, 6vw, 84px);
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(190, 2, 20, 0.26), transparent 42%),
+    #12382a;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sportstueble-pulse.is-soon {
+  background:
+    linear-gradient(135deg, rgba(244, 197, 66, 0.2), transparent 42%),
+    #12382a;
+}
+
+.sportstueble-pulse.is-closed .club-pulse-card::before {
+  background: rgba(255, 255, 255, 0.46);
+  animation: none;
+  box-shadow: none;
+}
+
+.opening-status-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .club-pulse-heading {
   display: flex;
   flex-direction: column;
@@ -549,7 +579,9 @@ h3 {
 
   .club-timeline::before,
   .club-timeline::after,
+  .timeline-travel-ball,
   .history-stage,
+  .history-stage::after,
   .history-image,
   .history-preview img,
   .timeline-entry,
@@ -654,6 +686,10 @@ h3 {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.stats {
+  counter-reset: stat-card;
+}
+
 .stats div,
 .feature-grid article,
 .split-list article,
@@ -672,6 +708,37 @@ h3 {
 .info-grid article > * {
   position: relative;
   z-index: 1;
+}
+
+.stats div {
+  counter-increment: stat-card;
+  display: grid;
+  min-height: 170px;
+  align-content: end;
+  padding: 18px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(190, 2, 20, 0.2), transparent 46%),
+    #12382a;
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 38px rgba(16, 25, 22, 0.16);
+}
+
+.stats div::after {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  min-width: 36px;
+  padding: 4px 8px;
+  color: #12382a;
+  background: #dbff7d;
+  border-radius: 999px;
+  content: "S" counter(stat-card);
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
 }
 
 .stats div::before,
@@ -702,6 +769,18 @@ h3 {
   opacity: 0.9;
 }
 
+.stats div::before {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 132px) calc(100% - 72px) / 118px 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 132px) calc(100% - 22px) / 118px 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 132px) calc(100% - 72px) / 1px 50px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 14px) calc(100% - 72px) / 1px 50px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18)) calc(100% - 73px) calc(100% - 72px) / 1px 50px no-repeat,
+    radial-gradient(circle at calc(100% - 28px) 28px, rgba(219, 255, 125, 0.64) 0 8px, transparent 9px),
+    linear-gradient(135deg, transparent 54%, rgba(219, 255, 125, 0.1));
+  opacity: 0.82;
+}
+
 .feature-grid article:nth-child(3n+2)::before,
 .split-list article:nth-child(3n+2)::before,
 .info-grid article:nth-child(3n+2)::before,
@@ -717,9 +796,33 @@ h3 {
 
 .stats strong {
   display: block;
-  color: var(--green);
-  font-size: 3rem;
-  line-height: 1;
+  width: min-content;
+  min-width: 1.2ch;
+  color: #dbff7d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: clamp(3.4rem, 7vw, 5.4rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 0.82;
+  text-shadow: 0 0 18px rgba(219, 255, 125, 0.28);
+  font-variant-numeric: tabular-nums;
+}
+
+.stats strong::after {
+  display: inline-block;
+  margin-left: 7px;
+  color: rgba(255, 255, 255, 0.45);
+  content: "x";
+  font-size: 0.28em;
+  vertical-align: super;
+}
+
+.stats div.is-counting strong {
+  animation: stat-flicker 900ms steps(2, end) 1;
+}
+
+.stats div.has-counted {
+  border-color: rgba(219, 255, 125, 0.34);
 }
 
 .stats span,
@@ -727,6 +830,28 @@ h3 {
 .split-list p,
 .info-grid p {
   color: var(--muted);
+}
+
+.stats span {
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+@keyframes stat-flicker {
+  0%,
+  22%,
+  38%,
+  100% {
+    opacity: 1;
+  }
+
+  30%,
+  34% {
+    opacity: 0.48;
+  }
 }
 
 .feature-grid,
@@ -859,6 +984,9 @@ h3 {
 .club-timeline {
   --timeline-detail-enter: 58px;
   --timeline-ghost-shift: 0px;
+  --timeline-preview-depth: 0px;
+  --timeline-progress: 0;
+  --timeline-travel: 0;
   --timeline-shift: 0px;
   --timeline-shift-reverse: 0px;
   position: relative;
@@ -870,6 +998,7 @@ h3 {
   overflow: hidden;
   color: var(--ink);
   background:
+    radial-gradient(circle at calc(var(--timeline-progress) * 1%) 18%, rgba(219, 255, 125, 0.22), transparent 18%),
     linear-gradient(135deg, rgba(37, 150, 100, 0.08), rgba(190, 2, 20, 0.04)),
     #fff;
   border: 1px solid var(--line);
@@ -888,8 +1017,9 @@ h3 {
 .club-timeline::before {
   inset: 0;
   background:
-    linear-gradient(90deg, transparent, rgba(37, 150, 100, 0.08), transparent),
-    repeating-linear-gradient(90deg, rgba(16, 25, 22, 0.04) 0 1px, transparent 1px 80px);
+    linear-gradient(90deg, transparent, rgba(219, 255, 125, 0.12), transparent),
+    repeating-linear-gradient(90deg, rgba(16, 25, 22, 0.04) 0 1px, transparent 1px 80px),
+    repeating-linear-gradient(0deg, rgba(37, 150, 100, 0.035) 0 1px, transparent 1px 58px);
   background-position: var(--timeline-shift) 0, var(--timeline-shift-reverse) 0;
   opacity: 0.7;
   transition: background-position 680ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -905,6 +1035,45 @@ h3 {
   line-height: 1;
   transform: translateX(var(--timeline-ghost-shift));
   transition: content 120ms ease, transform 680ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.timeline-travel-path {
+  position: absolute;
+  top: clamp(24px, 5vw, 48px);
+  right: clamp(20px, 5vw, 52px);
+  left: clamp(20px, 5vw, 52px);
+  z-index: 2;
+  height: 3px;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--green) calc(var(--timeline-progress) * 1%), rgba(37, 150, 100, 0.12) 0),
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(16, 25, 22, 0.12) 34px 35px);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.76);
+}
+
+.timeline-travel-ball {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--timeline-progress) * 1%);
+  width: 18px;
+  height: 18px;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.9), transparent 0 18%),
+    #dbff7d;
+  border: 2px solid rgba(18, 56, 42, 0.2);
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgba(219, 255, 125, 0.18), 0 10px 18px rgba(16, 25, 22, 0.16);
+  transform: translate(-50%, -50%);
+  transition: left 720ms cubic-bezier(0.18, 0.9, 0.24, 1.08), transform 720ms cubic-bezier(0.18, 0.9, 0.24, 1.08);
+}
+
+.club-timeline.is-travelling-forward .timeline-travel-ball {
+  transform: translate(-50%, -50%) rotate(1turn) scale(1.14);
+}
+
+.club-timeline.is-travelling-backward .timeline-travel-ball {
+  transform: translate(-50%, -50%) rotate(-1turn) scale(1.14);
 }
 
 .history-years,
@@ -932,7 +1101,9 @@ h3 {
   left: 7px;
   width: 2px;
   content: "";
-  background: linear-gradient(180deg, rgba(37, 150, 100, 0.12), var(--green), rgba(37, 150, 100, 0.12));
+  background:
+    linear-gradient(180deg, var(--green) calc(var(--timeline-progress) * 1%), rgba(37, 150, 100, 0.12) 0),
+    linear-gradient(180deg, rgba(37, 150, 100, 0.12), var(--green), rgba(37, 150, 100, 0.12));
   border-radius: 999px;
 }
 
@@ -950,6 +1121,16 @@ h3 {
   border-radius: 8px;
   appearance: none;
   transition: color 220ms ease, background 220ms ease, border-color 220ms ease, transform 220ms ease;
+}
+
+.timeline-entry::after {
+  position: absolute;
+  right: 12px;
+  color: rgba(37, 150, 100, 0);
+  content: "→";
+  font-weight: 900;
+  transform: translateX(-8px);
+  transition: color 220ms ease, transform 220ms ease;
 }
 
 .timeline-entry::before {
@@ -978,6 +1159,11 @@ h3 {
   transform: translateX(6px);
 }
 
+.timeline-entry.is-active::after {
+  color: var(--green-dark);
+  transform: translateX(0);
+}
+
 .timeline-entry:hover::before,
 .timeline-entry.is-active::before {
   background: var(--green);
@@ -987,6 +1173,7 @@ h3 {
 }
 
 .history-stage {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.58fr);
   gap: 0;
@@ -996,8 +1183,9 @@ h3 {
   border-radius: 8px;
   box-shadow: 0 18px 48px rgba(16, 25, 22, 0.16);
   opacity: 0;
-  transform: translateX(var(--timeline-detail-enter)) scale(0.985);
-  transition: opacity 300ms ease, transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: translateX(var(--timeline-detail-enter)) scale(0.985) rotateY(calc(var(--timeline-travel) * -1deg));
+  transform-origin: center;
+  transition: opacity 300ms ease, transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .history-stage.is-visible {
@@ -1011,7 +1199,25 @@ h3 {
   z-index: 1;
   pointer-events: none;
   content: "";
-  background: linear-gradient(90deg, transparent 58%, rgba(219, 255, 125, 0.14));
+  background:
+    linear-gradient(90deg, transparent 58%, rgba(219, 255, 125, 0.14)),
+    radial-gradient(circle at 72% 22%, rgba(219, 255, 125, 0.16), transparent 24%);
+}
+
+.history-stage::after {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.24), transparent);
+  opacity: 0;
+  transform: translateX(-115%);
+}
+
+.club-timeline.is-travelling-forward .history-stage::after,
+.club-timeline.is-travelling-backward .history-stage::after {
+  animation: timeline-travel-sweep 620ms ease;
 }
 
 .history-image {
@@ -1072,6 +1278,7 @@ h3 {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 10px;
+  perspective: 900px;
 }
 
 .history-preview {
@@ -1084,6 +1291,8 @@ h3 {
   background: transparent;
   border: 0;
   appearance: none;
+  transform: translateY(0) translateX(var(--timeline-preview-depth));
+  transition: color 220ms ease, transform 300ms ease, opacity 220ms ease;
 }
 
 .history-preview img {
@@ -1110,6 +1319,11 @@ h3 {
   transform: translateY(-3px);
 }
 
+.history-preview.is-active {
+  color: var(--green-dark);
+  transform: translateY(-6px) translateX(0) scale(1.02);
+}
+
 @keyframes timeline-panel-sweep {
   0% {
     opacity: 0;
@@ -1123,6 +1337,22 @@ h3 {
   100% {
     opacity: 0;
     transform: translateX(120%);
+  }
+}
+
+@keyframes timeline-travel-sweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-115%);
+  }
+
+  36% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(115%);
   }
 }
 
@@ -1817,6 +2047,8 @@ h3 {
 
   .quick-links,
   .club-pulse,
+  .sportstueble-pulse,
+  .opening-status-grid,
   .club-pulse-grid,
   .feature-grid,
   .split-list,
@@ -1839,6 +2071,13 @@ h3 {
   .club-timeline {
     grid-template-columns: 1fr;
     min-height: 0;
+    padding-top: 48px;
+  }
+
+  .timeline-travel-path {
+    top: 22px;
+    right: 28px;
+    left: 28px;
   }
 
   .history-controls {
@@ -1854,13 +2093,20 @@ h3 {
     left: 10px;
     width: auto;
     height: 2px;
-    background: linear-gradient(90deg, rgba(37, 150, 100, 0.12), var(--green), rgba(37, 150, 100, 0.12));
+    background:
+      linear-gradient(90deg, var(--green) calc(var(--timeline-progress) * 1%), rgba(37, 150, 100, 0.12) 0),
+      linear-gradient(90deg, rgba(37, 150, 100, 0.12), var(--green), rgba(37, 150, 100, 0.12));
   }
 
   .timeline-entry {
     justify-content: center;
-    padding: 12px 10px;
+    padding: 12px 20px 12px 10px;
     text-align: center;
+  }
+
+  .timeline-entry::after {
+    right: 8px;
+    content: "↓";
   }
 
   .timeline-entry::before {
@@ -1881,11 +2127,20 @@ h3 {
 
   .history-stage {
     grid-template-columns: 1fr;
+    transform: translateY(20px) scale(0.985);
+  }
+
+  .history-stage.is-visible {
+    transform: translateY(0) scale(1);
   }
 
   .history-previews {
     grid-column: 1;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .history-preview {
+    transform: translateY(var(--timeline-preview-depth));
   }
 
   .history-preview span {

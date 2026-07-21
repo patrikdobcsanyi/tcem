@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Lokaler Inhaltseditor fuer die TC Eschen-Mauren Website." />
+  <title>Admin Vorschau | TC Eschen-Mauren</title>
+  <link rel="stylesheet" href="styles.css?v=20260722-2" />
+  <link rel="stylesheet" href="admin.css?v=20260721-1" />
+  <link rel="icon" type="image/png" href="assets/logos/alternate_logo.png" />
+</head>
+<body class="admin-page">
+  <header class="admin-header">
+    <a class="admin-brand" href="index.html" aria-label="Zur Website">
+      <img src="assets/logos/alternate_logo.png" alt="TC Eschen-Mauren" />
+      <span>
+        <strong>TCEM Admin</strong>
+        <small>Lokale Vorschau und Export</small>
+      </span>
+    </a>
+    <a class="button secondary" href="index.html">Website ansehen</a>
+  </header>
+
+  <main class="admin-shell">
+    <section class="admin-intro">
+      <div>
+        <p class="eyebrow">Content Cockpit</p>
+        <h1>Inhalte bearbeiten, live pruefen, Datei exportieren.</h1>
+        <p>Diese Seite speichert noch nicht direkt ins Projekt. Sie erstellt dir die fertige JS-Datei, die spaeter lokal ersetzt oder per GitHub-Login automatisch committed werden kann.</p>
+      </div>
+      <div class="admin-status-grid" aria-label="Status">
+        <article>
+          <span>News</span>
+          <strong data-admin-news-count>0</strong>
+        </article>
+        <article>
+          <span>Termine</span>
+          <strong data-admin-event-count>0</strong>
+        </article>
+        <article>
+          <span>Naechster Termin</span>
+          <strong data-admin-next-event>-</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="admin-workspace">
+      <aside class="admin-tabs" aria-label="Admin Bereiche">
+        <button class="is-active" type="button" data-admin-tab="news">News</button>
+        <button type="button" data-admin-tab="events">Vereinskalender</button>
+      </aside>
+
+      <section class="admin-panel is-active" data-admin-panel="news">
+        <div class="admin-panel-header">
+          <div>
+            <p class="eyebrow">News</p>
+            <h2>Startseiten-News bearbeiten</h2>
+          </div>
+          <div class="admin-actions">
+            <button class="button secondary" type="button" data-admin-add="news">News hinzufuegen</button>
+            <button class="button secondary" type="button" data-admin-reset="news">Zuruecksetzen</button>
+            <button class="button primary" type="button" data-admin-download="news">news-data.js laden</button>
+          </div>
+        </div>
+
+        <div class="admin-editor-layout">
+          <div class="admin-editor-list" data-admin-list="news"></div>
+          <aside class="admin-preview">
+            <div class="admin-preview-heading">
+              <span>Live Preview</span>
+              <strong>News-Karte</strong>
+            </div>
+            <div class="admin-news-preview" data-admin-preview="news"></div>
+            <label class="admin-output">
+              <span>Export Inhalt</span>
+              <textarea data-admin-output="news" readonly></textarea>
+            </label>
+            <button class="admin-copy-button" type="button" data-admin-copy="news">In Zwischenablage kopieren</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="admin-panel" data-admin-panel="events">
+        <div class="admin-panel-header">
+          <div>
+            <p class="eyebrow">Vereinskalender</p>
+            <h2>Termine bearbeiten</h2>
+          </div>
+          <div class="admin-actions">
+            <button class="button secondary" type="button" data-admin-add="events">Termin hinzufuegen</button>
+            <button class="button secondary" type="button" data-admin-reset="events">Zuruecksetzen</button>
+            <button class="button primary" type="button" data-admin-download="events">events-data.js laden</button>
+          </div>
+        </div>
+
+        <div class="admin-editor-layout">
+          <div class="admin-editor-list" data-admin-list="events"></div>
+          <aside class="admin-preview">
+            <div class="admin-preview-heading">
+              <span>Live Preview</span>
+              <strong>Kalender-Eintrag</strong>
+            </div>
+            <div class="admin-calendar-preview" data-admin-preview="events"></div>
+            <label class="admin-output">
+              <span>Export Inhalt</span>
+              <textarea data-admin-output="events" readonly></textarea>
+            </label>
+            <button class="admin-copy-button" type="button" data-admin-copy="events">In Zwischenablage kopieren</button>
+          </aside>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/news-data.js?v=20260712-1" defer></script>
+  <script src="js/events-data.js?v=20260712-1" defer></script>
+  <script src="js/admin.js?v=20260721-1" defer></script>
+</body>
+</html>

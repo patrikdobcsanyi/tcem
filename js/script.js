@@ -23,6 +23,8 @@ const matchdaySection = document.querySelector("[data-matchday]");
 const matchCalendar = document.querySelector("[data-match-calendar]");
 const gvProtocolList = document.querySelector("[data-gv-protocols]");
 const annualReportList = document.querySelector("[data-annual-reports]");
+const statCounters = document.querySelectorAll("[data-stat-target]");
+const sportstuebleStatus = document.querySelector("[data-sportstueble-status]");
 
 if (header && toggle) {
   toggle.addEventListener("click", () => {
@@ -99,6 +101,165 @@ const formatDisplayDate = (dateKey) => {
 
   return `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 };
+
+if (sportstuebleStatus) {
+  const schedule = {
+    weekdayOpen: "16:00",
+    weekdayClose: "23:00",
+    sundayOpen: "10:00",
+    sundayClose: "14:00",
+    soonThresholdMinutes: 90,
+  };
+
+  const timeToMinutes = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const formatTime = (time) => `${time} Uhr`;
+  const now = new Date();
+  const day = now.getDay();
+  const date = now.getDate();
+  const minutesNow = now.getHours() * 60 + now.getMinutes();
+  const isFirstMonday = day === 1 && date <= 7;
+  const isSaturday = day === 6;
+  const todaysHours = day === 0
+    ? { open: schedule.sundayOpen, close: schedule.sundayClose, label: "Sonntag" }
+    : day >= 1 && day <= 5 && !isFirstMonday
+      ? { open: schedule.weekdayOpen, close: schedule.weekdayClose, label: "Heute" }
+      : null;
+
+  let state = {
+    className: "is-closed",
+    label: "Heute geschlossen",
+    title: "Heute ist Ruhetag",
+    text: isFirstMonday
+      ? "Jeder 1. Montag im Monat ist Ruhetag."
+      : isSaturday
+        ? "Samstag ist Ruhetag."
+        : "Heute sind keine regulären Öffnungszeiten hinterlegt.",
+  };
+
+  if (todaysHours) {
+    const openMinutes = timeToMinutes(todaysHours.open);
+    const closeMinutes = timeToMinutes(todaysHours.close);
+    const minutesUntilOpen = openMinutes - minutesNow;
+
+    if (minutesNow >= openMinutes && minutesNow < closeMinutes) {
+      state = {
+        className: "is-open",
+        label: "Jetzt geöffnet",
+        title: `Geöffnet bis ${formatTime(todaysHours.close)}`,
+        text: "Perfekt für Essen, Getränke oder den Clubhock nach dem Spiel.",
+      };
+    } else if (minutesUntilOpen > 0 && minutesUntilOpen <= schedule.soonThresholdMinutes) {
+      state = {
+        className: "is-soon",
+        label: "Öffnet bald",
+        title: `Öffnet um ${formatTime(todaysHours.open)}`,
+        text: `In ungefähr ${minutesUntilOpen} Minuten ist das Sportstüble regulär geöffnet.`,
+      };
+    } else if (minutesNow < openMinutes) {
+      state = {
+        className: "is-today",
+        label: "Heute geöffnet",
+        title: `${todaysHours.label} ab ${formatTime(todaysHours.open)}`,
+        text: `Regulär geöffnet bis ${formatTime(todaysHours.close)}.`,
+      };
+    } else {
+      state = {
+        className: "is-closed",
+        label: "Heute geschlossen",
+        title: "Für heute bereits geschlossen",
+        text: "Die nächsten regulären Öffnungszeiten findest du unten.",
+      };
+    }
+  }
+
+  sportstuebleStatus.className = `sportstueble-pulse ${state.className}`;
+  sportstuebleStatus.innerHTML = `
+    <div class="club-pulse-heading">
+      <span>Sportstüble live</span>
+      <strong>${state.label}</strong>
+    </div>
+    <div class="club-pulse-grid opening-status-grid">
+      <article class="club-pulse-card">
+        <span>Status</span>
+        <strong>${state.title}</strong>
+        <p>${state.text}</p>
+        <small>${state.label}</small>
+      </article>
+      <article class="club-pulse-card">
+        <span>Heute</span>
+        <strong>${todaysHours ? `${formatTime(todaysHours.open)} - ${formatTime(todaysHours.close)}` : "Ruhetag"}</strong>
+        <p>${todaysHours ? "Reguläre Öffnungszeit für heute." : state.text}</p>
+        <small>Öffnungszeiten</small>
+      </article>
+      <article class="club-pulse-card">
+        <span>Kontakt</span>
+        <strong>Reservieren?</strong>
+        <p>Ruf kurz im Sportstüble an, wenn du mit einer Gruppe vorbeikommst.</p>
+        <small>00423 792 71 07</small>
+      </article>
+    </div>
+  `;
+}
+
+if (statCounters.length > 0) {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const animateCounter = (counter) => {
+    const target = Number(counter.dataset.statTarget || counter.textContent);
+
+    if (!Number.isFinite(target)) {
+      return;
+    }
+
+    counter.closest(".stats div")?.classList.add("is-counting");
+
+    if (prefersReducedMotion) {
+      counter.textContent = String(target);
+      counter.closest(".stats div")?.classList.add("has-counted");
+      return;
+    }
+
+    const duration = 1100 + target * 90;
+    const startTime = performance.now();
+
+    const tick = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      counter.textContent = String(Math.round(target * eased));
+
+      if (progress < 1) {
+        window.requestAnimationFrame(tick);
+      } else {
+        counter.textContent = String(target);
+        counter.closest(".stats div")?.classList.add("has-counted");
+      }
+    };
+
+    counter.textContent = "0";
+    window.requestAnimationFrame(tick);
+  };
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        animateCounter(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.45 });
+
+    statCounters.forEach((counter) => observer.observe(counter));
+  } else {
+    statCounters.forEach(animateCounter);
+  }
+}
 
 if (clubPulse) {
   const today = new Date();
@@ -501,6 +662,8 @@ if (clubTimeline && Array.isArray(window.clubTimeline) && window.clubTimeline.le
   const historyCounter = document.createElement("small");
   const historyPreviews = document.createElement("div");
   const timelineControls = document.createElement("div");
+  const timelineTravelPath = document.createElement("div");
+  const timelineTravelBall = document.createElement("span");
   const timelineButtons = [];
   const previewButtons = [];
 
@@ -514,6 +677,10 @@ if (clubTimeline && Array.isArray(window.clubTimeline) && window.clubTimeline.le
   historyCounter.className = "history-counter";
   historyPreviews.className = "history-previews";
   timelineControls.className = "history-controls";
+  timelineTravelPath.className = "timeline-travel-path";
+  timelineTravelBall.className = "timeline-travel-ball";
+  timelineTravelPath.setAttribute("aria-hidden", "true");
+  timelineTravelPath.append(timelineTravelBall);
 
   const setActiveTimelineItem = (activeIndex) => {
     const activeItem = window.clubTimeline[activeIndex];
@@ -534,6 +701,7 @@ if (clubTimeline && Array.isArray(window.clubTimeline) && window.clubTimeline.le
     clubTimeline.style.setProperty("--timeline-shift-reverse", `${progress * 0.55}px`);
     clubTimeline.style.setProperty("--timeline-ghost-shift", `${progress * 0.165}px`);
     clubTimeline.style.setProperty("--timeline-detail-enter", `${direction * 58}px`);
+    clubTimeline.style.setProperty("--timeline-preview-depth", `${direction * -16}px`);
     clubTimeline.style.setProperty("--timeline-travel", travel);
     clubTimeline.dataset.activeYear = activeItem.year || "";
     historyStage.classList.remove("is-visible");
@@ -593,7 +761,7 @@ if (clubTimeline && Array.isArray(window.clubTimeline) && window.clubTimeline.le
   historyPanel.append(historyEyebrow, historyTitle, historyText, historyCounter);
   historyStage.append(historyImage, historyPanel);
   historyYears.append(timelineControls);
-  clubTimeline.append(historyYears, historyStage, historyPreviews);
+  clubTimeline.append(timelineTravelPath, historyYears, historyStage, historyPreviews);
   setActiveTimelineItem(activeTimelineIndex);
 }
 
