@@ -99,6 +99,39 @@
   line-height: 1;
 }
 
+.admin-save-status {
+  grid-column: 1 / -1;
+  min-height: 44px;
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--muted);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-weight: 850;
+}
+
+.admin-save-status:empty {
+  display: none;
+}
+
+.admin-save-status[data-mode="pending"] {
+  color: var(--green-dark);
+  background: rgba(37, 150, 100, 0.08);
+}
+
+.admin-save-status[data-mode="success"] {
+  color: var(--green-dark);
+  background: rgba(37, 150, 100, 0.12);
+  border-color: rgba(37, 150, 100, 0.22);
+}
+
+.admin-save-status[data-mode="error"] {
+  color: var(--red);
+  background: rgba(190, 2, 20, 0.08);
+  border-color: rgba(190, 2, 20, 0.2);
+}
+
 .admin-workspace {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
@@ -260,6 +293,30 @@
   grid-column: 1 / -1;
 }
 
+.admin-field.is-checkbox {
+  align-content: end;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  min-height: 72px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.admin-field.is-checkbox span {
+  order: 2;
+  align-self: center;
+}
+
+.admin-field.is-checkbox input {
+  order: 1;
+  width: 20px;
+  min-height: 20px;
+  padding: 0;
+  accent-color: var(--green-dark);
+}
+
 .admin-field span,
 .admin-output span {
   color: var(--muted);
@@ -339,6 +396,51 @@
 .admin-calendar-preview {
   display: grid;
   gap: 14px;
+}
+
+.admin-generic-preview {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-simple-preview {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 14px 32px rgba(16, 25, 22, 0.08);
+}
+
+.admin-simple-preview h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: 1.35rem;
+  line-height: 1.16;
+}
+
+.admin-simple-preview p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.admin-preview-logo {
+  width: 100%;
+  max-height: 140px;
+  object-fit: contain;
+  padding: 18px;
+  background: var(--soft);
+  border-radius: 8px;
+}
+
+.admin-preview-avatar {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .admin-validation {

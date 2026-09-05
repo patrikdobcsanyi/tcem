@@ -26,6 +26,7 @@
 
         <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
           <a href="index.html"${activeAttr("home")}>Home</a>
+          <a href="plaetze.html"${activeAttr("plaetze")}>Plätze</a>
           <a href="${sectionHref("#training")}">Training</a>
           <a href="verein.html"${activeAttr("verein")}>Verein</a>
           <a href="padel.html"${activeAttr("padel")}>Padel</a>

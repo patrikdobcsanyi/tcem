@@ -32,6 +32,282 @@ body {
   line-height: 1.55;
 }
 
+.serve-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  --intro-court-width: min(90vw, 1220px);
+  --intro-court-height: min(58vh, 560px);
+  --serve-ball-screen-x: 50vw;
+  --serve-ball-screen-y: 68vh;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(219, 255, 125, 0.13), transparent 24%),
+    linear-gradient(145deg, rgba(190, 2, 20, 0.18), transparent 42%),
+    linear-gradient(180deg, #12382a, #0b2a21);
+  animation: serve-stage-exit 2500ms cubic-bezier(0.18, 0.74, 0.2, 1) forwards;
+}
+
+.serve-intro-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: clamp(132px, 17vw, 230px);
+  height: auto;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 8px;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.24);
+  transform: translate(-50%, -50%) scale(0.9);
+  animation: serve-logo-intro 2100ms cubic-bezier(0.2, 0.74, 0.2, 1) forwards;
+}
+
+.serve-intro-ball {
+  position: absolute;
+  top: var(--serve-ball-screen-y);
+  left: var(--serve-ball-screen-x);
+  z-index: 5;
+  width: clamp(38px, 4.8vw, 62px);
+  height: clamp(38px, 4.8vw, 62px);
+  margin: 0;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.96), transparent 0 15%),
+    radial-gradient(ellipse at 50% 20%, transparent 43%, rgba(18, 56, 42, 0.34) 44% 46%, transparent 47%),
+    radial-gradient(ellipse at 50% 80%, transparent 43%, rgba(18, 56, 42, 0.28) 44% 46%, transparent 47%),
+    #dbff7d;
+  border: 2px solid rgba(18, 56, 42, 0.14);
+  border-radius: 50%;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24), 0 0 0 10px rgba(219, 255, 125, 0.08);
+  opacity: 0;
+  transform-origin: center bottom;
+  animation: serve-ball-action 1700ms cubic-bezier(0.18, 0.82, 0.2, 1) 1080ms forwards;
+}
+
+.serve-intro-trail {
+  position: absolute;
+  top: 53%;
+  left: 18vw;
+  z-index: 1;
+  width: 0;
+  height: 5px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #ffffff 18%, rgba(255, 255, 255, 0.86));
+  border-radius: 999px;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.34);
+  transform: rotate(-3deg);
+  transform-origin: left center;
+  animation: serve-trail-draw 2050ms cubic-bezier(0.18, 0.76, 0.2, 1) forwards;
+}
+
+.serve-intro-court {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: var(--intro-court-width);
+  height: var(--intro-court-height);
+  border: 2px solid rgba(255, 255, 255, 0);
+  border-radius: 6px;
+  opacity: 0;
+  transform: translate(-50%, -38%) perspective(900px) rotateX(58deg) scale(0.72);
+  transform-origin: center bottom;
+  animation: serve-court-build 2500ms cubic-bezier(0.18, 0.74, 0.2, 1) forwards;
+}
+
+.serve-court-line {
+  position: absolute;
+  display: block;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.26);
+  transform-origin: center;
+}
+
+.serve-court-baseline,
+.serve-court-service-a,
+.serve-court-service-b {
+  height: 2px;
+  transform: scaleX(0);
+  animation: serve-line-x 720ms cubic-bezier(0.2, 0.74, 0.18, 1) forwards;
+}
+
+.serve-court-baseline {
+  top: 50%;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  animation-delay: 820ms;
+}
+
+.serve-court-service-a {
+  top: 10%;
+  left: 0%;
+  width: 100%;
+  animation-delay: 980ms;
+}
+
+.serve-court-service-b {
+  top: 90%;
+  left: 0%;
+  width: 100%;
+  animation-delay: 1060ms;
+}
+
+.serve-court-center,
+.serve-court-side-a,
+.serve-court-side-b {
+  width: 2px;
+  transform: scaleY(0);
+  animation: serve-line-y 700ms cubic-bezier(0.2, 0.74, 0.18, 1) forwards;
+}
+
+.serve-court-center {
+  top: 0%;
+  left: 50%;
+  height: 100%;
+  animation-delay: 960ms;
+}
+
+.serve-court-side-a {
+  top: 10%;
+  left: 25%;
+  height: 80%;
+  animation-delay: 1100ms;
+}
+
+.serve-court-side-b {
+  top: 10%;
+  right: 25%;
+  height: 80%;
+  animation-delay: 1100ms;
+}
+
+.serve-ball-anchor {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.serve-intro-active .site-header {
+  opacity: 0;
+  transform: translateY(-18px);
+}
+
+.serve-intro-complete .site-header {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 520ms ease, transform 620ms cubic-bezier(0.2, 0.78, 0.2, 1);
+}
+
+@keyframes serve-logo-intro {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.86);
+  }
+
+  16%{
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50%{
+    opacity: 1;
+    transform: translate(-50%, -200%) scale(1.2);
+  }
+  100%{
+    opacity: 1;
+    transform: translate(-50%, -200%) scale(1.2);
+
+  }
+}
+
+@keyframes serve-ball-action {
+  0% {
+    opacity: 1;
+    transform: translate3d(-50%, -80%, 0) scale(0.64) rotate(0deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(46vw, -80%, 0) scale(0.58) rotate(680deg);
+  }
+}
+
+@keyframes serve-trail-draw {
+  0%,
+  46% {
+    opacity: 0;
+    width: 0;
+  }
+
+  60% {
+    opacity: 1;
+    width: 58vw;
+  }
+
+  76% {
+    opacity: 0.22;
+    width: 70vw;
+  }
+
+  100% {
+    opacity: 0;
+    width: 76vw;
+  }
+}
+
+@keyframes serve-court-build {
+  0%,
+  34% {
+    opacity: 0;
+    border-color: rgba(255, 255, 255, 0);
+    transform: translate(-50%, -38%) perspective(1000px) rotateX(58deg) scale(0.66);
+  }
+
+  54% {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.86);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -42%) perspective(1000px) rotateX(40deg) scale(1.08);
+  }
+
+  100% {
+    opacity: 0;
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translate(-50%, -45%) perspective(1000px) rotateX(6deg) scale(3.4);
+  }
+}
+
+@keyframes serve-line-x {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes serve-line-y {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes serve-stage-exit {
+  0%,
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -245,6 +521,21 @@ a {
   color: #28352f;
 }
 
+.motion-ready .home-hero .eyebrow,
+.motion-ready .home-hero h1,
+.motion-ready .home-hero h2,
+.motion-ready .home-hero .hero-copy,
+.motion-ready .home-hero .hero-actions {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 700ms ease, transform 760ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.motion-ready .home-hero h1,
+.motion-ready .home-hero h2 {
+  transform: translateY(34px);
+}
+
 .home-hero-image {
   position: absolute;
   top: 0;
@@ -279,6 +570,37 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.motion-ready .home-hero .home-hero-image img {
+  transform: scale(1.07);
+  transition: transform 1400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.motion-ready .home-hero.is-hero-ready .eyebrow,
+.motion-ready .home-hero.is-hero-ready h1,
+.motion-ready .home-hero.is-hero-ready h2,
+.motion-ready .home-hero.is-hero-ready .hero-copy,
+.motion-ready .home-hero.is-hero-ready .hero-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-ready .home-hero.is-hero-ready h1,
+.motion-ready .home-hero.is-hero-ready h2 {
+  transition-delay: 80ms;
+}
+
+.motion-ready .home-hero.is-hero-ready .hero-copy {
+  transition-delay: 160ms;
+}
+
+.motion-ready .home-hero.is-hero-ready .hero-actions {
+  transition-delay: 240ms;
+}
+
+.motion-ready .home-hero.is-hero-ready .home-hero-image img {
+  transform: scale(1);
 }
 
 .page-hero {
@@ -557,6 +879,163 @@ h3 {
   color: #fff;
 }
 
+.places-pulse-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.booking-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.booking-choice-card {
+  position: relative;
+  display: grid;
+  align-content: end;
+  min-height: 330px;
+  overflow: hidden;
+  padding: 24px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(190, 2, 20, 0.2), transparent 46%),
+    #12382a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 18px 38px rgba(16, 25, 22, 0.16);
+}
+
+.booking-choice-card::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle at calc(100% - 28px) 28px, rgba(219, 255, 125, 0.64) 0 8px, transparent 9px),
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 132px) calc(100% - 72px) / 118px 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 132px) calc(100% - 22px) / 118px 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 132px) calc(100% - 72px) / 1px 50px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.22)) calc(100% - 14px) calc(100% - 72px) / 1px 50px no-repeat;
+  opacity: 0.78;
+}
+
+.booking-choice-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.booking-choice-card span {
+  color: #dbff7d;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.booking-choice-card h3 {
+  margin: 12px 0 10px;
+  color: #fff;
+  font-size: clamp(1.55rem, 3vw, 2.45rem);
+  line-height: 1;
+}
+
+.booking-choice-card p {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.booking-choice-card .button {
+  justify-self: start;
+}
+
+.location-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.location-panel > div {
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.location-panel p {
+  color: var(--muted);
+}
+
+.motion-ready .motion-reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition:
+    opacity 680ms ease var(--reveal-delay, 0ms),
+    transform 760ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--reveal-delay, 0ms),
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease;
+}
+
+.motion-ready .motion-reveal.reveal-from-side {
+  transform: translateX(28px) scale(0.98);
+}
+
+.motion-ready .motion-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-ready .motion-reveal.reveal-from-side.is-visible {
+  transform: translateX(0) scale(1);
+}
+
+.club-pulse-card,
+.booking-choice-card,
+.feature-grid article,
+.split-list article,
+.info-grid article,
+.team-card,
+.match-card,
+.price-card,
+.premium-booking-card,
+.document-card,
+.calendar-event,
+.news-card {
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.club-pulse-card:hover,
+.booking-choice-card:hover,
+.feature-grid article:hover,
+.split-list article:hover,
+.info-grid article:hover,
+.team-card:hover,
+.match-card:hover,
+.price-card:hover,
+.premium-booking-card:hover,
+.document-card:hover,
+.calendar-event:hover,
+.news-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(16, 25, 22, 0.12);
+}
+
+.club-pulse-card:hover::after,
+.booking-choice-card:hover::before,
+.feature-grid article:hover::before,
+.split-list article:hover::before,
+.info-grid article:hover::before,
+.team-card:hover::before,
+.match-card:hover::before,
+.price-card:hover::before,
+.premium-booking-card:hover::before,
+.document-card:hover::before,
+.calendar-event:hover::before,
+.news-card:hover .news-card-content::after {
+  transform: translateX(-4px) rotate(-2deg);
+  opacity: 0.95;
+}
+
 @keyframes pulse-dot {
   0% {
     box-shadow: 0 0 0 0 rgba(219, 255, 125, 0.5);
@@ -573,6 +1052,8 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   .club-pulse-card::before,
+  .serve-intro,
+  .serve-intro *,
   .matchday-section::after {
     animation: none;
   }
@@ -586,8 +1067,26 @@ h3 {
   .history-preview img,
   .timeline-entry,
   .timeline-entry strong,
+  .motion-reveal,
+  .home-hero .eyebrow,
+  .home-hero h1,
+  .home-hero h2,
+  .home-hero .hero-copy,
+  .home-hero .hero-actions,
+  .home-hero-image img,
+  .section-side-image img,
   .history-preview {
     transition: none;
+  }
+
+  .motion-reveal,
+  .home-hero .eyebrow,
+  .home-hero h1,
+  .home-hero h2,
+  .home-hero .hero-copy,
+  .home-hero .hero-actions {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -659,6 +1158,11 @@ h3 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.motion-ready .section-side-image img {
+  transform: translateY(var(--motion-y, 0)) scale(1.04);
+  transition: transform 420ms ease-out;
 }
 
 .two-column {
@@ -2049,6 +2553,9 @@ h3 {
   .club-pulse,
   .sportstueble-pulse,
   .opening-status-grid,
+  .places-pulse-grid,
+  .booking-choice-grid,
+  .location-panel,
   .club-pulse-grid,
   .feature-grid,
   .split-list,

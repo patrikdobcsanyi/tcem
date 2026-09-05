@@ -1,0 +1,21 @@
+name = "tcem-admin-save"
+main = "cloudflare/admin-save-worker.js"
+compatibility_date = "2026-09-05"
+
+# Route this Worker only to the API endpoint.
+# Replace zone_name with the domain in your Cloudflare account.
+# routes = [
+#  { pattern = "tceschen-mauren.li/api/admin/*", zone_name = "tceschen-mauren.li" }
+#]
+
+[vars]
+GITHUB_OWNER = "patrikdobcsanyi"
+GITHUB_REPO = "tcem"
+GITHUB_BRANCH = "main"
+GITHUB_COMMITTER_EMAIL = "136340883+patrikdobcsanyi@users.noreply.github.com"
+
+# Comma-separated emails. Keep this in sync with the Cloudflare Access policy.
+ALLOWED_ADMIN_EMAILS = "praesi@tceschen-mauren.li,spiel@tceschen-mauren.li,office@tceschen-mauren.li,finanz@tceschen-mauren.li,kassa@tceschen-mauren.li,sponsor@tceschen-mauren.li"
+
+# Set as a secret, not here:
+# npx wrangler secret put GITHUB_TOKEN

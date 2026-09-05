@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TCEM Vorstand Cockpit</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="./" aria-label="TC Eschen-Mauren Vorstand Cockpit">
+      <img src="../assets/logos/logo.png" alt="" />
+      <span>Vorstand</span>
+    </a>
+
+    <nav class="top-nav" aria-label="Bereiche">
+      <a href="#aufgaben">Aufgaben</a>
+      <a href="#kalender">Kalender</a>
+      <a href="#links">Links</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="simple-grid">
+      <section class="panel tasks-panel" id="aufgaben">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Pendenzen</p>
+            <h2>Aufgaben</h2>
+          </div>
+          <div class="task-filter-bar">
+            <div class="segmented" role="group" aria-label="Aufgaben filtern">
+              <button class="is-active" type="button" data-task-filter="open">Offen</button>
+              <button type="button" data-task-filter="soon">Bald</button>
+              <button type="button" data-task-filter="done">Erledigt</button>
+              <button type="button" data-task-filter="all">Alle</button>
+            </div>
+            <label class="person-filter">
+              <span>Person</span>
+              <select id="personFilter"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="task-list" id="taskList"></div>
+      </section>
+
+      <aside class="side-stack">
+        <section class="panel meeting-panel" id="sitzung">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Nächster Termin</p>
+              <h2>Nächste Sitzung</h2>
+            </div>
+          </div>
+          <div id="nextMeeting"></div>
+        </section>
+
+        <section class="panel" id="backlog">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Ideen</p>
+              <h2>Backlog</h2>
+            </div>
+          </div>
+          <div class="backlog-list" id="backlogList"></div>
+        </section>
+
+        <section class="panel" id="kontakte">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Kontakte</p>
+              <h2>Wichtige Kontakte</h2>
+            </div>
+          </div>
+          <div class="contact-list" id="contactList"></div>
+        </section>
+
+        <section class="panel" id="kalender">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Termine</p>
+              <h2>Kalender</h2>
+            </div>
+          </div>
+          <div class="calendar-frame">
+            <iframe
+              title="TCEM Vorstand Google Kalender"
+              src="https://calendar.google.com/calendar/embed?src=c22653c59c0bd42728f1bdbb8efe66f6aae160f862320ddddf74a7fe6f95984a%40group.calendar.google.com&ctz=Europe%2FZurich"
+              frameborder="0"
+              scrolling="no"></iframe>
+          </div>
+        </section>
+
+        <section class="panel" id="links">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Schnellzugriff</p>
+              <h2>Links</h2>
+            </div>
+          </div>
+          <div class="link-list" id="documentList"></div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

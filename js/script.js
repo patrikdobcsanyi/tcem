@@ -1431,3 +1431,181 @@ document.addEventListener("keydown", (event) => {
     });
   }
 });
+
+const initMotionSystem = () => {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (prefersReducedMotion) {
+    return;
+  }
+
+  document.documentElement.classList.add("motion-ready");
+
+  const homeHeroes = document.querySelectorAll(".home-hero");
+  if (homeHeroes.length > 0) {
+    const introStorageKey = "tcemServeIntroSeen";
+    let shouldPlayServeIntro = true;
+
+    try {
+      shouldPlayServeIntro = window.sessionStorage.getItem(introStorageKey) !== "true";
+      window.sessionStorage.setItem(introStorageKey, "true");
+    } catch (error) {
+      shouldPlayServeIntro = true;
+    }
+
+    if (!shouldPlayServeIntro) {
+      document.documentElement.classList.add("serve-intro-complete");
+      homeHeroes.forEach((hero) => {
+        hero.classList.add("is-hero-ready");
+      });
+    } else {
+    document.documentElement.classList.add("serve-intro-active");
+
+    const intro = document.createElement("div");
+    intro.className = "serve-intro";
+    intro.setAttribute("aria-hidden", "true");
+    intro.innerHTML = `
+      <img class="serve-intro-logo" src="assets/logos/logo.png" alt="" />
+      <span class="serve-intro-ball"></span>
+      <span class="serve-intro-court">
+        <span class="serve-court-line serve-court-baseline"></span>
+        <span class="serve-court-line serve-court-center"></span>
+        <span class="serve-court-line serve-court-service-a"></span>
+        <span class="serve-court-line serve-court-service-b"></span>
+        <span class="serve-court-line serve-court-side-a"></span>
+        <span class="serve-court-line serve-court-side-b"></span>
+        <span class="serve-ball-anchor"></span>
+      </span>
+    `;
+    document.body.append(intro);
+
+    const ballAnchor = intro.querySelector(".serve-ball-anchor");
+    const syncBallAnchor = () => {
+      const anchorRect = ballAnchor.getBoundingClientRect();
+      intro.style.setProperty("--serve-ball-screen-x", `${anchorRect.left + anchorRect.width / 2}px`);
+      intro.style.setProperty("--serve-ball-screen-y", `${anchorRect.top + anchorRect.height / 2}px`);
+    };
+    const syncStartedAt = window.performance.now();
+    const syncUntilBallLeavesCourt = () => {
+      syncBallAnchor();
+
+      if (window.performance.now() - syncStartedAt < 980) {
+        window.requestAnimationFrame(syncUntilBallLeavesCourt);
+      }
+    };
+
+    window.requestAnimationFrame(syncUntilBallLeavesCourt);
+
+    window.setTimeout(() => {
+      document.documentElement.classList.add("serve-intro-complete");
+      homeHeroes.forEach((hero) => {
+        hero.classList.add("is-hero-ready");
+      });
+    }, 2050);
+
+    window.setTimeout(() => {
+      intro.remove();
+      document.documentElement.classList.remove("serve-intro-active");
+    }, 3100);
+    }
+  } else {
+    homeHeroes.forEach((hero) => {
+      hero.classList.add("is-hero-ready");
+    });
+  }
+
+  const revealSelectors = [
+    ".section-heading",
+    ".quick-links a",
+    ".club-pulse-heading",
+    ".club-pulse-card",
+    ".sportstueble-pulse .club-pulse-card",
+    ".news-card",
+    ".feature-grid article",
+    ".split-list article",
+    ".info-grid article",
+    ".booking-choice-card",
+    ".location-panel > div",
+    ".calendar-event",
+    ".mini-calendar",
+    ".team-card",
+    ".match-card",
+    ".price-card",
+    ".premium-booking-card",
+    ".document-card",
+    ".document-login-note",
+    ".section-side-image",
+    ".sponsor-rotator",
+    ".club-timeline",
+    ".gallery-story",
+    ".gallery-filter",
+    ".gallery-item",
+  ];
+  const revealItems = Array.from(document.querySelectorAll(revealSelectors.join(",")));
+
+  revealItems.forEach((item, index) => {
+    const parent = item.parentElement;
+    const siblingIndex = parent ? Array.from(parent.children).indexOf(item) : index;
+    const staggerIndex = Math.max(0, siblingIndex % 6);
+    item.classList.add("motion-reveal");
+    item.style.setProperty("--reveal-delay", `${staggerIndex * 70}ms`);
+
+    if (item.matches(".section-side-image")) {
+      item.classList.add("reveal-from-side");
+    }
+  });
+
+  const reveal = (item) => item.classList.add("is-visible");
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        reveal(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, {
+      rootMargin: "0px 0px -10% 0px",
+      threshold: 0.12,
+    });
+
+    revealItems.forEach((item) => observer.observe(item));
+  } else {
+    revealItems.forEach(reveal);
+  }
+
+  const parallaxImages = Array.from(document.querySelectorAll(".section-side-image img"));
+  let ticking = false;
+
+  const updateParallax = () => {
+    parallaxImages.forEach((image) => {
+      const rect = image.getBoundingClientRect();
+      const viewportCenter = window.innerHeight / 2;
+      const elementCenter = rect.top + rect.height / 2;
+      const distance = (elementCenter - viewportCenter) / viewportCenter;
+      const offset = Math.max(-12, Math.min(12, distance * -10));
+      image.style.setProperty("--motion-y", `${offset}px`);
+    });
+    ticking = false;
+  };
+
+  const requestParallaxUpdate = () => {
+    if (ticking) {
+      return;
+    }
+
+    ticking = true;
+    window.requestAnimationFrame(updateParallax);
+  };
+
+  if (parallaxImages.length > 0) {
+    updateParallax();
+    window.addEventListener("scroll", requestParallaxUpdate, { passive: true });
+    window.addEventListener("resize", requestParallaxUpdate);
+  }
+};
+
+initMotionSystem();
