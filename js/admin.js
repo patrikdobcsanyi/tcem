@@ -559,16 +559,18 @@ const setSaveStatus = (message, mode = "idle") => {
 
 const saveDataFile = async (type) => {
   const config = adminConfig[type];
+  const body = JSON.stringify({
+    type,
+    fileName: config.fileName,
+    content: serializeDataFile(type),
+  });
   const response = await fetch(getAdminSaveEndpoint(), {
     method: "POST",
+    credentials: "include",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "text/plain;charset=utf-8",
     },
-    body: JSON.stringify({
-      type,
-      fileName: config.fileName,
-      content: serializeDataFile(type),
-    }),
+    body,
   });
   const payload = await response.json().catch(() => ({}));
 
