@@ -2147,6 +2147,7 @@ h3 {
 .match-info p {
   margin: 0;
   color: var(--muted);
+  white-space: pre-line;
 }
 
 .match-label.junior {
@@ -2235,6 +2236,7 @@ h3 {
 .calendar-event-content p {
   margin: 0;
   color: var(--muted);
+  white-space: pre-line;
 }
 
 .calendar-tag {
@@ -2823,6 +2825,7 @@ h3 {
 .news-card p {
   margin-bottom: 0;
   color: var(--muted);
+  white-space: pre-line;
 }
 
 .image-lightbox {
@@ -3075,6 +3078,7 @@ h3 {
   font-size: 0.88rem;
   color: var(--muted);
   line-height: 1.4;
+  white-space: pre-line;
 }
 
 /* Subtle highlights using your red variable accenting or a light tint */
