@@ -175,6 +175,20 @@
   border-color: var(--green-dark);
 }
 
+.admin-tabs button.has-unsaved-changes::after {
+  content: " *";
+  color: var(--red);
+}
+
+.admin-tabs button.is-active.has-unsaved-changes::after {
+  color: #fff;
+}
+
+.admin-actions .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .admin-panel {
   display: none;
   min-width: 0;
@@ -296,6 +310,19 @@
   color: var(--muted);
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+.admin-card-actions .is-preview-action {
+  color: #fff;
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+}
+
+.admin-card-actions .is-preview-action:disabled {
+  color: #fff;
+  background: var(--green);
+  border-color: var(--green);
+  opacity: 1;
 }
 
 .admin-card-actions button:last-child {

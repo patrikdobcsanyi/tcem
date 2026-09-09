@@ -223,6 +223,9 @@ const getToday = () => {
 
 const serializeDataFile = (type) => `window.${adminConfig[type].globalName} = ${JSON.stringify(adminState[type], null, 2)};\n`;
 
+const isAdminTypeDirty = (type) => JSON.stringify(adminState[type]) !== JSON.stringify(originalAdminState[type]);
+const getDirtyTypes = () => adminTypes.filter(isAdminTypeDirty);
+
 const getLocalAssetKey = (type, index, fieldKey) => `${type}:${index}:${fieldKey}`;
 
 const setLocalAssetPreview = (type, index, fieldKey, file) => {
@@ -252,6 +255,23 @@ const updatePreviewedCard = (type) => {
   document.querySelectorAll(`[data-admin-list="${type}"] .admin-edit-card`).forEach((card, index) => {
     card.classList.toggle("is-previewed", index === activePreviewIndexes[type]);
   });
+};
+
+const updateDirtyState = (type, showHint = false) => {
+  const isDirty = isAdminTypeDirty(type);
+  const saveButton = document.querySelector(`[data-admin-save="${type}"]`);
+  const tab = document.querySelector(`[data-admin-tab="${type}"]`);
+
+  if (saveButton) saveButton.disabled = !isDirty;
+  if (tab) tab.classList.toggle("has-unsaved-changes", isDirty);
+
+  if (showHint && isDirty) {
+    setSaveStatus(`Ungespeicherte Aenderungen in ${adminConfig[type].label}. Bitte speichern.`, "pending");
+  }
+};
+
+const updateAllDirtyStates = () => {
+  adminTypes.forEach((type) => updateDirtyState(type));
 };
 
 const updateStatus = () => {
@@ -329,7 +349,7 @@ const renderAdminShell = () => {
         <div class="admin-actions">
           <button class="button secondary" type="button" data-admin-add="${type}">${config.addLabel}</button>
           <button class="button secondary" type="button" data-admin-reset="${type}">Zuruecksetzen</button>
-          <button class="button primary" type="button" data-admin-save="${type}">Speichern</button>
+          <button class="button primary" type="button" data-admin-save="${type}" disabled>Speichern</button>
         </div>
       </div>
 
@@ -484,6 +504,7 @@ const renderField = (type, item, index, field, card) => {
     validationList?.replaceWith(createValidationList(validateItem(type, adminState[type][index])));
     renderPreview(type);
     updateStatus();
+    updateDirtyState(type, true);
   });
 
   label.append(labelText, input);
@@ -544,6 +565,7 @@ const renderEditorList = (type) => {
     const heading = document.createElement("div");
     const actions = document.createElement("div");
     const title = document.createElement("strong");
+    const previewButton = document.createElement("button");
     const moveUpButton = document.createElement("button");
     const moveDownButton = document.createElement("button");
     const removeButton = document.createElement("button");
@@ -557,6 +579,16 @@ const renderEditorList = (type) => {
     actions.className = "admin-card-actions";
     fieldGrid.className = "admin-field-grid";
     title.textContent = `${index + 1}. ${item.title || item.name || "Ohne Titel"}`;
+    previewButton.type = "button";
+    previewButton.textContent = "Vorschau";
+    previewButton.className = "is-preview-action";
+    previewButton.disabled = index === activePreviewIndexes[type];
+    previewButton.addEventListener("click", () => {
+      setActivePreviewIndex(type, index);
+      renderPreview(type);
+      updatePreviewedCard(type);
+      renderEditorList(type);
+    });
     moveUpButton.type = "button";
     moveUpButton.textContent = "Nach oben";
     moveUpButton.disabled = index === 0;
@@ -564,6 +596,7 @@ const renderEditorList = (type) => {
       [adminState[type][index - 1], adminState[type][index]] = [adminState[type][index], adminState[type][index - 1]];
       setActivePreviewIndex(type, index - 1);
       renderAdmin(type);
+      updateDirtyState(type, true);
     });
     moveDownButton.type = "button";
     moveDownButton.textContent = "Nach unten";
@@ -572,6 +605,7 @@ const renderEditorList = (type) => {
       [adminState[type][index + 1], adminState[type][index]] = [adminState[type][index], adminState[type][index + 1]];
       setActivePreviewIndex(type, index + 1);
       renderAdmin(type);
+      updateDirtyState(type, true);
     });
     removeButton.type = "button";
     removeButton.textContent = "Entfernen";
@@ -579,19 +613,10 @@ const renderEditorList = (type) => {
       adminState[type].splice(index, 1);
       setActivePreviewIndex(type, index);
       renderAdmin(type);
-    });
-    card.addEventListener("focusin", () => {
-      setActivePreviewIndex(type, index);
-      renderPreview(type);
-      updatePreviewedCard(type);
-    });
-    card.addEventListener("click", () => {
-      setActivePreviewIndex(type, index);
-      renderPreview(type);
-      updatePreviewedCard(type);
+      updateDirtyState(type, true);
     });
 
-    actions.append(moveUpButton, moveDownButton, removeButton);
+    actions.append(previewButton, moveUpButton, moveDownButton, removeButton);
     heading.append(title, actions);
     config.fields.forEach((field) => {
       fieldGrid.append(renderField(type, item, index, field, card));
@@ -779,11 +804,18 @@ const renderAdmin = (type) => {
   renderEditorList(type);
   renderPreview(type);
   updateStatus();
+  updateDirtyState(type);
 };
 
 const activatePanel = (type) => {
   document.querySelectorAll("[data-admin-tab]").forEach((button) => button.classList.toggle("is-active", button.dataset.adminTab === type));
   document.querySelectorAll("[data-admin-panel]").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.adminPanel === type));
+
+  const dirtyTypes = getDirtyTypes();
+  if (dirtyTypes.length > 0) {
+    const labels = dirtyTypes.map((dirtyType) => adminConfig[dirtyType].label).join(", ");
+    setSaveStatus(`Ungespeicherte Aenderungen in: ${labels}.`, "pending");
+  }
 };
 
 const bindAdminEvents = () => {
@@ -801,7 +833,9 @@ const bindAdminEvents = () => {
     if (addButton) {
       const type = addButton.dataset.adminAdd;
       adminState[type].unshift(cloneData(adminConfig[type].emptyItem));
+      setActivePreviewIndex(type, 0);
       renderAdmin(type);
+      updateDirtyState(type, true);
       return;
     }
 
@@ -809,6 +843,7 @@ const bindAdminEvents = () => {
       const type = resetButton.dataset.adminReset;
       adminState[type] = cloneData(originalAdminState[type]);
       renderAdmin(type);
+      setSaveStatus(`${adminConfig[type].label} wurde zurueckgesetzt.`, "idle");
       return;
     }
 
@@ -821,12 +856,14 @@ const bindAdminEvents = () => {
 
       try {
         const result = await saveDataFile(type);
+        originalAdminState[type] = cloneData(adminState[type]);
+        updateDirtyState(type);
         setSaveStatus(`Gespeichert von ${result.actor || "Admin"}: ${result.fileName}`, "success");
       } catch (error) {
         setSaveStatus(error.message, "error");
       } finally {
-        saveButton.disabled = false;
         saveButton.textContent = previousText;
+        updateDirtyState(type);
       }
     }
 
@@ -842,6 +879,7 @@ const initializeAdmin = async () => {
     renderAdminShell();
     bindAdminEvents();
     adminTypes.forEach(renderAdmin);
+    updateAllDirtyStates();
     setSaveStatus(`Angemeldet: ${result.actor || "Admin"}`, "success");
   } catch (error) {
     setSaveStatus(error.message, "error");
@@ -849,3 +887,10 @@ const initializeAdmin = async () => {
 };
 
 initializeAdmin();
+
+window.addEventListener("beforeunload", (event) => {
+  if (getDirtyTypes().length === 0) return;
+
+  event.preventDefault();
+  event.returnValue = "";
+});
