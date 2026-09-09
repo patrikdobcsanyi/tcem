@@ -13,6 +13,9 @@ The website stays static. Cloudflare adds login and the Worker saves edited data
   Cloudflare Worker validates the request
   Cloudflare Worker commits js/*-data.js to GitHub
 
+/api/admin/verify
+  Worker validates the admin password before the editor opens
+
 /api/admin/upload
   Worker admin password or Cloudflare Access protects who can call it
   Cloudflare Worker validates the image

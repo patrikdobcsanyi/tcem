@@ -151,6 +151,7 @@ const adminConfig = {
 const adminTypes = Object.keys(adminConfig);
 const adminState = Object.fromEntries(adminTypes.map((type) => [type, cloneData(adminConfig[type].getData())]));
 const originalAdminState = cloneData(adminState);
+const localAssetPreviews = new Map();
 
 const monthNames = [
   "Januar",
@@ -203,6 +204,26 @@ const getToday = () => {
 };
 
 const serializeDataFile = (type) => `window.${adminConfig[type].globalName} = ${JSON.stringify(adminState[type], null, 2)};\n`;
+
+const getLocalAssetKey = (type, index, fieldKey) => `${type}:${index}:${fieldKey}`;
+
+const setLocalAssetPreview = (type, index, fieldKey, file) => {
+  const key = getLocalAssetKey(type, index, fieldKey);
+  const previousUrl = localAssetPreviews.get(key);
+
+  if (previousUrl) URL.revokeObjectURL(previousUrl);
+
+  const nextUrl = URL.createObjectURL(file);
+  localAssetPreviews.set(key, nextUrl);
+  return nextUrl;
+};
+
+const getImagePreviewSource = (type, item, fieldKey, fallback) => {
+  const index = adminState[type].indexOf(item);
+  const localUrl = index >= 0 ? localAssetPreviews.get(getLocalAssetKey(type, index, fieldKey)) : "";
+
+  return localUrl || item[fieldKey] || fallback;
+};
 
 const updateStatus = () => {
   const upcomingEvents = sortByDateAscending(adminState.events).filter((event) => {
@@ -313,6 +334,7 @@ const getAdminSaveEndpoint = () => {
 };
 
 const getAdminUploadEndpoint = () => getAdminSaveEndpoint().replace(/\/save$/, "/upload");
+const getAdminVerifyEndpoint = () => getAdminSaveEndpoint().replace(/\/save$/, "/verify");
 
 const getAdminPassword = () => {
   const storedPassword = window.sessionStorage.getItem("tcemAdminPassword");
@@ -363,6 +385,30 @@ const uploadAsset = async (type, field, file) => {
   if (!response.ok) {
     if (response.status === 401 || response.status === 403) forgetAdminPassword();
     throw new Error(payload.error || "Bild-Upload fehlgeschlagen.");
+  }
+
+  return payload;
+};
+
+const verifyAdminAccess = async () => {
+  const password = getAdminPassword();
+  if (!password) {
+    throw new Error("Admin Passwort fehlt.");
+  }
+
+  const response = await fetch(getAdminVerifyEndpoint(), {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8",
+    },
+    body: JSON.stringify({ adminPassword: password }),
+  });
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) forgetAdminPassword();
+    throw new Error(payload.error || "Admin Login fehlgeschlagen.");
   }
 
   return payload;
@@ -421,11 +467,13 @@ const renderField = (type, item, index, field, card) => {
     uploadInput.accept = "image/jpeg,image/png,image/webp,image/gif,image/avif";
     uploadInput.className = "admin-file-input";
     uploadHint.className = "admin-upload-hint";
-    uploadHint.textContent = `Bild hochladen nach ${field.assetDir}`;
+    uploadHint.textContent = "Bild auswaehlen";
     uploadInput.addEventListener("change", async () => {
       const [file] = uploadInput.files || [];
       if (!file) return;
 
+      setLocalAssetPreview(type, index, field.key, file);
+      renderPreview(type);
       input.disabled = true;
       uploadInput.disabled = true;
       uploadHint.textContent = `${file.name} wird hochgeladen...`;
@@ -464,14 +512,32 @@ const renderEditorList = (type) => {
   adminState[type].forEach((item, index) => {
     const card = document.createElement("article");
     const heading = document.createElement("div");
+    const actions = document.createElement("div");
     const title = document.createElement("strong");
+    const moveUpButton = document.createElement("button");
+    const moveDownButton = document.createElement("button");
     const removeButton = document.createElement("button");
     const fieldGrid = document.createElement("div");
 
     card.className = "admin-edit-card";
     heading.className = "admin-card-title";
+    actions.className = "admin-card-actions";
     fieldGrid.className = "admin-field-grid";
     title.textContent = `${index + 1}. ${item.title || item.name || "Ohne Titel"}`;
+    moveUpButton.type = "button";
+    moveUpButton.textContent = "Nach oben";
+    moveUpButton.disabled = index === 0;
+    moveUpButton.addEventListener("click", () => {
+      [adminState[type][index - 1], adminState[type][index]] = [adminState[type][index], adminState[type][index - 1]];
+      renderAdmin(type);
+    });
+    moveDownButton.type = "button";
+    moveDownButton.textContent = "Nach unten";
+    moveDownButton.disabled = index === adminState[type].length - 1;
+    moveDownButton.addEventListener("click", () => {
+      [adminState[type][index + 1], adminState[type][index]] = [adminState[type][index], adminState[type][index + 1]];
+      renderAdmin(type);
+    });
     removeButton.type = "button";
     removeButton.textContent = "Entfernen";
     removeButton.addEventListener("click", () => {
@@ -479,7 +545,8 @@ const renderEditorList = (type) => {
       renderAdmin(type);
     });
 
-    heading.append(title, removeButton);
+    actions.append(moveUpButton, moveDownButton, removeButton);
+    heading.append(title, actions);
     config.fields.forEach((field) => {
       fieldGrid.append(renderField(type, item, index, field, card));
     });
@@ -523,7 +590,7 @@ const renderNewsPreview = (preview) => {
   const text = document.createElement("p");
 
   card.className = "news-card";
-  image.src = latestNews.image || "assets/news/50-years.png";
+  image.src = getImagePreviewSource("news", latestNews, "image", "assets/news/50-years.png");
   image.alt = latestNews.alt || latestNews.title || "News Bild";
   image.className = "is-loaded";
   content.className = "news-card-content";
@@ -599,7 +666,7 @@ const renderPreview = (type) => {
   if (type === "sponsors") {
     const card = createPreviewCard(firstItem, [firstItem.logo]);
     const image = document.createElement("img");
-    image.src = firstItem.logo || "assets/sponsors/sponsor-1.svg";
+    image.src = getImagePreviewSource(type, firstItem, "logo", "assets/sponsors/sponsor-1.svg");
     image.alt = firstItem.name || "Sponsor";
     image.className = "admin-preview-logo";
     card.prepend(image);
@@ -620,7 +687,7 @@ const renderPreview = (type) => {
   if (type === "board") {
     const card = createPreviewCard(firstItem, [firstItem.role, firstItem.email, firstItem.phone]);
     const image = document.createElement("img");
-    image.src = firstItem.image || "assets/vorstand/placeholder.png";
+    image.src = getImagePreviewSource(type, firstItem, "image", "assets/vorstand/placeholder.png");
     image.alt = firstItem.name || "Vorstandsmitglied";
     image.className = "admin-preview-avatar";
     card.prepend(image);
@@ -671,52 +738,66 @@ const activatePanel = (type) => {
   document.querySelectorAll("[data-admin-panel]").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.adminPanel === type));
 };
 
-renderAdminShell();
+const bindAdminEvents = () => {
+  document.querySelector("[data-admin-tabs]").addEventListener("click", (event) => {
+    const tab = event.target.closest("[data-admin-tab]");
+    if (!tab) return;
+    activatePanel(tab.dataset.adminTab);
+  });
 
-document.querySelector("[data-admin-tabs]").addEventListener("click", (event) => {
-  const tab = event.target.closest("[data-admin-tab]");
-  if (!tab) return;
-  activatePanel(tab.dataset.adminTab);
-});
+  document.querySelector("[data-admin-panels]").addEventListener("click", async (event) => {
+    const addButton = event.target.closest("[data-admin-add]");
+    const resetButton = event.target.closest("[data-admin-reset]");
+    const saveButton = event.target.closest("[data-admin-save]");
 
-document.querySelector("[data-admin-panels]").addEventListener("click", async (event) => {
-  const addButton = event.target.closest("[data-admin-add]");
-  const resetButton = event.target.closest("[data-admin-reset]");
-  const saveButton = event.target.closest("[data-admin-save]");
-
-  if (addButton) {
-    const type = addButton.dataset.adminAdd;
-    adminState[type].unshift(cloneData(adminConfig[type].emptyItem));
-    renderAdmin(type);
-    return;
-  }
-
-  if (resetButton) {
-    const type = resetButton.dataset.adminReset;
-    adminState[type] = cloneData(originalAdminState[type]);
-    renderAdmin(type);
-    return;
-  }
-
-  if (saveButton) {
-    const type = saveButton.dataset.adminSave;
-    const previousText = saveButton.textContent;
-    saveButton.disabled = true;
-    saveButton.textContent = "Speichert...";
-    setSaveStatus(`${adminConfig[type].fileName} wird gespeichert...`, "pending");
-
-    try {
-      const result = await saveDataFile(type);
-      setSaveStatus(`Gespeichert von ${result.actor || "Admin"}: ${result.fileName}`, "success");
-    } catch (error) {
-      setSaveStatus(error.message, "error");
-    } finally {
-      saveButton.disabled = false;
-      saveButton.textContent = previousText;
+    if (addButton) {
+      const type = addButton.dataset.adminAdd;
+      adminState[type].unshift(cloneData(adminConfig[type].emptyItem));
+      renderAdmin(type);
+      return;
     }
-    return;
+
+    if (resetButton) {
+      const type = resetButton.dataset.adminReset;
+      adminState[type] = cloneData(originalAdminState[type]);
+      renderAdmin(type);
+      return;
+    }
+
+    if (saveButton) {
+      const type = saveButton.dataset.adminSave;
+      const previousText = saveButton.textContent;
+      saveButton.disabled = true;
+      saveButton.textContent = "Speichert...";
+      setSaveStatus(`${adminConfig[type].fileName} wird gespeichert...`, "pending");
+
+      try {
+        const result = await saveDataFile(type);
+        setSaveStatus(`Gespeichert von ${result.actor || "Admin"}: ${result.fileName}`, "success");
+      } catch (error) {
+        setSaveStatus(error.message, "error");
+      } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = previousText;
+      }
+    }
+
+  });
+};
+
+const initializeAdmin = async () => {
+  setSaveStatus("Admin Login wird geprueft...", "pending");
+
+  try {
+    const result = await verifyAdminAccess();
+    document.body.classList.remove("is-admin-locked");
+    renderAdminShell();
+    bindAdminEvents();
+    adminTypes.forEach(renderAdmin);
+    setSaveStatus(`Angemeldet: ${result.actor || "Admin"}`, "success");
+  } catch (error) {
+    setSaveStatus(error.message, "error");
   }
+};
 
-});
-
-adminTypes.forEach(renderAdmin);
+initializeAdmin();

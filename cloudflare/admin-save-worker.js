@@ -275,8 +275,9 @@ export default {
 
     const isSaveRequest = url.pathname === "/api/admin/save";
     const isUploadRequest = url.pathname === "/api/admin/upload";
+    const isVerifyRequest = url.pathname === "/api/admin/verify";
 
-    if (!isSaveRequest && !isUploadRequest) {
+    if (!isSaveRequest && !isUploadRequest && !isVerifyRequest) {
       return jsonResponse(request, env, { error: "Not found." }, 404);
     }
 
@@ -285,15 +286,20 @@ export default {
     }
 
     try {
-      if (!env.GITHUB_OWNER || !env.GITHUB_REPO || !env.GITHUB_TOKEN) {
-        return jsonResponse(request, env, { error: "Worker GitHub environment is incomplete." }, 500);
-      }
-
       const body = JSON.parse(await request.text());
       const actor = assertAdminAccess({
         actor: await getActorEmail(request, ctx),
         adminPassword: body.adminPassword,
       }, env);
+
+      if (isVerifyRequest) {
+        return jsonResponse(request, env, { actor });
+      }
+
+      if (!env.GITHUB_OWNER || !env.GITHUB_REPO || !env.GITHUB_TOKEN) {
+        return jsonResponse(request, env, { error: "Worker GitHub environment is incomplete." }, 500);
+      }
+
       const result = isUploadRequest
         ? await saveAssetToGitHub({ ...body, actor }, env)
         : await saveToGitHub({ ...body, actor }, env);
