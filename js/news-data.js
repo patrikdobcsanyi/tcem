@@ -1,16 +1,9 @@
 window.newsItems = [
   {
-    "date": "2026-06-11",
-    "title": "50 Jahre TCEM",
-    "text": "Wir feiern alle zusammen 50 Jahre TC Eschen Mauren. Sei dabei beim nächsten Event am 11.06.",
-    "image": "assets/news/1788986446115-homepage-aussenplatze-1.jpeg",
-    "alt": "50 Jahre TCEM"
-  },
-  {
-    "date": "2026-06-11",
-    "title": "50 Jahre TCEM",
-    "text": "Wir feiern alle zusammen 50 Jahre TC Eschen Mauren. Sei dabei beim nächsten Event am 11.06.",
+    "date": "2026-08-29",
+    "title": "Clubmeisterschaft 2026",
+    "text": "Wir gratulieren unseren Tennis Clubmeistern 2026:\n\nHerren Aktiv:                       Patrik Dobcsanyi   \n\nHerren 45+:                          Marco Insinna\n\n​​​​​​​​​​​​​​15&U Buben:                       Mark Dobcsanyi\n\n15&U Mädchen:                  Linda Öhler\n\n12&U Mixed:                       Briker Ben \n\nU10 Mixed:                           Noah Goop",
     "image": "assets/news/50-years.png",
-    "alt": "50 Jahre TCEM"
+    "alt": "News Bild"
   }
 ];
