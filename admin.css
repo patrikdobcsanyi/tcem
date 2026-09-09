@@ -150,8 +150,7 @@
   border-radius: 8px;
 }
 
-.admin-tabs button,
-.admin-copy-button {
+.admin-tabs button {
   min-height: 44px;
   padding: 10px 14px;
   color: var(--green-dark);
@@ -165,8 +164,7 @@
 }
 
 .admin-tabs button:hover,
-.admin-tabs button.is-active,
-.admin-copy-button:hover {
+.admin-tabs button.is-active {
   color: #fff;
   background: var(--green-dark);
   border-color: var(--green-dark);
@@ -317,8 +315,7 @@
   accent-color: var(--green-dark);
 }
 
-.admin-field span,
-.admin-output span {
+.admin-field span {
   color: var(--muted);
   font-size: 0.74rem;
   font-weight: 900;
@@ -327,8 +324,7 @@
 
 .admin-field input,
 .admin-field select,
-.admin-field textarea,
-.admin-output textarea {
+.admin-field textarea {
   width: 100%;
   min-height: 42px;
   padding: 10px 12px;
@@ -344,17 +340,22 @@
   resize: vertical;
 }
 
-.admin-output {
-  display: grid;
+.admin-field.has-upload {
   gap: 8px;
 }
 
-.admin-output textarea {
-  min-height: 180px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+.admin-file-input {
+  min-height: 40px;
+  padding: 8px;
+  color: var(--muted);
+  background: rgba(16, 72, 51, 0.05);
+  cursor: pointer;
+}
+
+.admin-upload-hint {
+  color: var(--muted);
   font-size: 0.78rem;
-  line-height: 1.5;
-  resize: vertical;
+  line-height: 1.35;
 }
 
 .admin-preview {

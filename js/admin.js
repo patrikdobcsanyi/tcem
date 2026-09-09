@@ -13,7 +13,7 @@ const adminConfig = {
     fields: [
       { key: "date", label: "Datum", type: "date" },
       { key: "title", label: "Titel", type: "text" },
-      { key: "image", label: "Bildpfad", type: "text" },
+      { key: "image", label: "Bildpfad", type: "text", assetDir: "assets/news" },
       { key: "alt", label: "Alt-Text", type: "text" },
       { key: "text", label: "Text", type: "textarea", wide: true },
     ],
@@ -66,7 +66,7 @@ const adminConfig = {
     getData: () => window.sponsors,
     fields: [
       { key: "name", label: "Name", type: "text", wide: true },
-      { key: "logo", label: "Logo-Pfad", type: "text", wide: true },
+      { key: "logo", label: "Logo-Pfad", type: "text", wide: true, assetDir: "assets/sponsors" },
     ],
     emptyItem: {
       name: "Neuer Sponsor",
@@ -136,7 +136,7 @@ const adminConfig = {
       { key: "role", label: "Rolle", type: "text" },
       { key: "email", label: "E-Mail", type: "email" },
       { key: "phone", label: "Telefon", type: "tel" },
-      { key: "image", label: "Bildpfad", type: "text", wide: true },
+      { key: "image", label: "Bildpfad", type: "text", wide: true, assetDir: "assets/vorstand" },
     ],
     emptyItem: {
       name: "Neue Person",
@@ -203,16 +203,6 @@ const getToday = () => {
 };
 
 const serializeDataFile = (type) => `window.${adminConfig[type].globalName} = ${JSON.stringify(adminState[type], null, 2)};\n`;
-
-const downloadTextFile = (fileName, content) => {
-  const blob = new Blob([content], { type: "text/javascript;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  link.click();
-  URL.revokeObjectURL(url);
-};
 
 const updateStatus = () => {
   const upcomingEvents = sortByDateAscending(adminState.events).filter((event) => {
@@ -290,7 +280,6 @@ const renderAdminShell = () => {
           <button class="button secondary" type="button" data-admin-add="${type}">${config.addLabel}</button>
           <button class="button secondary" type="button" data-admin-reset="${type}">Zuruecksetzen</button>
           <button class="button primary" type="button" data-admin-save="${type}">Speichern</button>
-          <button class="button primary" type="button" data-admin-download="${type}">${config.fileName} laden</button>
         </div>
       </div>
 
@@ -302,11 +291,6 @@ const renderAdminShell = () => {
             <strong>${config.previewTitle}</strong>
           </div>
           <div class="admin-generic-preview" data-admin-preview="${type}"></div>
-          <label class="admin-output">
-            <span>Export Inhalt</span>
-            <textarea data-admin-output="${type}" readonly></textarea>
-          </label>
-          <button class="admin-copy-button" type="button" data-admin-copy="${type}">In Zwischenablage kopieren</button>
         </aside>
       </div>
     `;
@@ -314,6 +298,74 @@ const renderAdminShell = () => {
     tabs.append(tab);
     panels.append(panel);
   });
+};
+
+const getAdminSaveEndpoint = () => {
+  if (window.TCEM_ADMIN_SAVE_ENDPOINT) {
+    return window.TCEM_ADMIN_SAVE_ENDPOINT;
+  }
+
+  if (window.location.hostname.endsWith("github.io")) {
+    return "https://tcem-admin-save.tcem-admin-save.workers.dev/api/admin/save";
+  }
+
+  return "/api/admin/save";
+};
+
+const getAdminUploadEndpoint = () => getAdminSaveEndpoint().replace(/\/save$/, "/upload");
+
+const getAdminPassword = () => {
+  const storedPassword = window.sessionStorage.getItem("tcemAdminPassword");
+  if (storedPassword) return storedPassword;
+
+  const password = window.prompt("Admin Passwort");
+  if (!password) return "";
+
+  window.sessionStorage.setItem("tcemAdminPassword", password);
+  return password;
+};
+
+const forgetAdminPassword = () => {
+  window.sessionStorage.removeItem("tcemAdminPassword");
+};
+
+const fileToBase64 = async (file) => {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let binary = "";
+
+  for (let index = 0; index < bytes.length; index += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+  }
+
+  return btoa(binary);
+};
+
+const uploadAsset = async (type, field, file) => {
+  const body = JSON.stringify({
+    type,
+    fieldKey: field.key,
+    directory: field.assetDir,
+    fileName: file.name,
+    contentType: file.type,
+    contentBase64: await fileToBase64(file),
+    adminPassword: getAdminPassword(),
+  });
+  const response = await fetch(getAdminUploadEndpoint(), {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8",
+    },
+    body,
+  });
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) forgetAdminPassword();
+    throw new Error(payload.error || "Bild-Upload fehlgeschlagen.");
+  }
+
+  return payload;
 };
 
 const renderField = (type, item, index, field, card) => {
@@ -355,11 +407,52 @@ const renderField = (type, item, index, field, card) => {
     }
     validationList?.replaceWith(createValidationList(validateItem(type, adminState[type][index])));
     renderPreview(type);
-    updateOutput(type);
     updateStatus();
   });
 
   label.append(labelText, input);
+
+  if (field.assetDir) {
+    const uploadHint = document.createElement("small");
+    const uploadInput = document.createElement("input");
+
+    label.classList.add("has-upload");
+    uploadInput.type = "file";
+    uploadInput.accept = "image/jpeg,image/png,image/webp,image/gif,image/avif";
+    uploadInput.className = "admin-file-input";
+    uploadHint.className = "admin-upload-hint";
+    uploadHint.textContent = `Bild hochladen nach ${field.assetDir}`;
+    uploadInput.addEventListener("change", async () => {
+      const [file] = uploadInput.files || [];
+      if (!file) return;
+
+      input.disabled = true;
+      uploadInput.disabled = true;
+      uploadHint.textContent = `${file.name} wird hochgeladen...`;
+      setSaveStatus(`${file.name} wird hochgeladen...`, "pending");
+
+      try {
+        const result = await uploadAsset(type, field, file);
+        adminState[type][index][field.key] = result.path;
+        input.value = result.path;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        uploadHint.textContent = `Hochgeladen: ${result.path}`;
+        setSaveStatus(`Bild hochgeladen: ${result.path}. Danach bitte Speichern klicken.`, "success");
+      } catch (error) {
+        const message = error.message === "Failed to fetch"
+          ? "Upload geht in der lokalen Vorschau nicht. Bitte admin.html auf der geschuetzten Website oeffnen oder das Bild manuell in den assets-Ordner legen."
+          : error.message;
+        uploadHint.textContent = `Upload fehlgeschlagen: ${message}`;
+        setSaveStatus(message, "error");
+      } finally {
+        input.disabled = false;
+        uploadInput.disabled = false;
+      }
+    });
+
+    label.append(uploadInput, uploadHint);
+  }
+
   return label;
 };
 
@@ -535,22 +628,6 @@ const renderPreview = (type) => {
   }
 };
 
-const updateOutput = (type) => {
-  document.querySelector(`[data-admin-output="${type}"]`).value = serializeDataFile(type);
-};
-
-const getAdminSaveEndpoint = () => {
-  if (window.TCEM_ADMIN_SAVE_ENDPOINT) {
-    return window.TCEM_ADMIN_SAVE_ENDPOINT;
-  }
-
-  if (window.location.hostname.endsWith("github.io")) {
-    return "https://tcem-admin-save.tcem-admin-save.workers.dev/api/admin/save";
-  }
-
-  return "/api/admin/save";
-};
-
 const setSaveStatus = (message, mode = "idle") => {
   const status = document.querySelector("[data-admin-save-status]");
   status.textContent = message;
@@ -563,6 +640,7 @@ const saveDataFile = async (type) => {
     type,
     fileName: config.fileName,
     content: serializeDataFile(type),
+    adminPassword: getAdminPassword(),
   });
   const response = await fetch(getAdminSaveEndpoint(), {
     method: "POST",
@@ -575,6 +653,7 @@ const saveDataFile = async (type) => {
   const payload = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 401 || response.status === 403) forgetAdminPassword();
     throw new Error(payload.error || "Speichern fehlgeschlagen.");
   }
 
@@ -584,7 +663,6 @@ const saveDataFile = async (type) => {
 const renderAdmin = (type) => {
   renderEditorList(type);
   renderPreview(type);
-  updateOutput(type);
   updateStatus();
 };
 
@@ -605,8 +683,6 @@ document.querySelector("[data-admin-panels]").addEventListener("click", async (e
   const addButton = event.target.closest("[data-admin-add]");
   const resetButton = event.target.closest("[data-admin-reset]");
   const saveButton = event.target.closest("[data-admin-save]");
-  const downloadButton = event.target.closest("[data-admin-download]");
-  const copyButton = event.target.closest("[data-admin-copy]");
 
   if (addButton) {
     const type = addButton.dataset.adminAdd;
@@ -641,22 +717,6 @@ document.querySelector("[data-admin-panels]").addEventListener("click", async (e
     return;
   }
 
-  if (downloadButton) {
-    const type = downloadButton.dataset.adminDownload;
-    downloadTextFile(adminConfig[type].fileName, serializeDataFile(type));
-    return;
-  }
-
-  if (copyButton) {
-    const type = copyButton.dataset.adminCopy;
-    const text = serializeDataFile(type);
-    await navigator.clipboard.writeText(text);
-    const previousText = copyButton.textContent;
-    copyButton.textContent = "Kopiert";
-    window.setTimeout(() => {
-      copyButton.textContent = previousText;
-    }, 1400);
-  }
 });
 
 adminTypes.forEach(renderAdmin);

@@ -15,7 +15,7 @@ GITHUB_BRANCH = "main"
 GITHUB_COMMITTER_EMAIL = "136340883+patrikdobcsanyi@users.noreply.github.com"
 
 # Comma-separated emails. Keep this in sync with the Cloudflare Access policy.
-ALLOWED_ADMIN_EMAILS = "praesi@tceschen-mauren.li,spiel@tceschen-mauren.li,office@tceschen-mauren.li,finanz@tceschen-mauren.li,kassa@tceschen-mauren.li,sponsor@tceschen-mauren.li"
+ALLOWED_ADMIN_EMAILS = "praesi@tceschen-mauren.li,spiel@tceschen-mauren.li,office@tceschen-mauren.li,finanz@tceschen-mauren.li,kassa@tceschen-mauren.li,sponsor@tceschen-mauren.li,patdobcsanyi@gmail.com"
 
 # Set as a secret, not here:
 # npx wrangler secret put GITHUB_TOKEN
