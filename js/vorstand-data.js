@@ -14,6 +14,13 @@ window.vorstandMembers = [
     "image": "assets/vorstand/placeholder.png"
   },
   {
+    "name": "Ingrid Öhler",
+    "role": "Kassier",
+    "email": "finanz@tceschen-mauren.li",
+    "phone": "-",
+    "image": "assets/vorstand/placeholder.png"
+  },
+  {
     "name": "Jantra Taravella",
     "role": "Sekretär",
     "email": "office@tceschen-mauren.li",
@@ -22,7 +29,7 @@ window.vorstandMembers = [
   },
   {
     "name": "Kevin Rüf",
-    "role": "Kassier",
+    "role": "Sponsoring",
     "email": "sponsor@tceschen-mauren.li",
     "phone": "+423 785 55 00",
     "image": "assets/vorstand/placeholder.png"
