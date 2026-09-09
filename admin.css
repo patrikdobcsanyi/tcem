@@ -256,6 +256,11 @@
   z-index: 1;
 }
 
+.admin-edit-card.is-previewed {
+  border-color: rgba(37, 150, 100, 0.42);
+  box-shadow: 0 14px 34px rgba(16, 72, 51, 0.09);
+}
+
 .admin-card-title {
   display: flex;
   align-items: center;

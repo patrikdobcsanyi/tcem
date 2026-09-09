@@ -151,6 +151,7 @@ const adminConfig = {
 const adminTypes = Object.keys(adminConfig);
 const adminState = Object.fromEntries(adminTypes.map((type) => [type, cloneData(adminConfig[type].getData())]));
 const originalAdminState = cloneData(adminState);
+const activePreviewIndexes = Object.fromEntries(adminTypes.map((type) => [type, 0]));
 const localAssetPreviews = new Map();
 
 const monthNames = [
@@ -223,6 +224,17 @@ const getImagePreviewSource = (type, item, fieldKey, fallback) => {
   const localUrl = index >= 0 ? localAssetPreviews.get(getLocalAssetKey(type, index, fieldKey)) : "";
 
   return localUrl || item[fieldKey] || fallback;
+};
+
+const setActivePreviewIndex = (type, index) => {
+  const maxIndex = Math.max(0, adminState[type].length - 1);
+  activePreviewIndexes[type] = Math.min(Math.max(index, 0), maxIndex);
+};
+
+const updatePreviewedCard = (type) => {
+  document.querySelectorAll(`[data-admin-list="${type}"] .admin-edit-card`).forEach((card, index) => {
+    card.classList.toggle("is-previewed", index === activePreviewIndexes[type]);
+  });
 };
 
 const updateStatus = () => {
@@ -451,6 +463,7 @@ const renderField = (type, item, index, field, card) => {
     if (cardTitle) {
       cardTitle.textContent = `${index + 1}. ${adminState[type][index].title || adminState[type][index].name || "Ohne Titel"}`;
     }
+    setActivePreviewIndex(type, index);
     validationList?.replaceWith(createValidationList(validateItem(type, adminState[type][index])));
     renderPreview(type);
     updateStatus();
@@ -520,6 +533,9 @@ const renderEditorList = (type) => {
     const fieldGrid = document.createElement("div");
 
     card.className = "admin-edit-card";
+    if (index === activePreviewIndexes[type]) {
+      card.classList.add("is-previewed");
+    }
     heading.className = "admin-card-title";
     actions.className = "admin-card-actions";
     fieldGrid.className = "admin-field-grid";
@@ -529,6 +545,7 @@ const renderEditorList = (type) => {
     moveUpButton.disabled = index === 0;
     moveUpButton.addEventListener("click", () => {
       [adminState[type][index - 1], adminState[type][index]] = [adminState[type][index], adminState[type][index - 1]];
+      setActivePreviewIndex(type, index - 1);
       renderAdmin(type);
     });
     moveDownButton.type = "button";
@@ -536,13 +553,25 @@ const renderEditorList = (type) => {
     moveDownButton.disabled = index === adminState[type].length - 1;
     moveDownButton.addEventListener("click", () => {
       [adminState[type][index + 1], adminState[type][index]] = [adminState[type][index], adminState[type][index + 1]];
+      setActivePreviewIndex(type, index + 1);
       renderAdmin(type);
     });
     removeButton.type = "button";
     removeButton.textContent = "Entfernen";
     removeButton.addEventListener("click", () => {
       adminState[type].splice(index, 1);
+      setActivePreviewIndex(type, index);
       renderAdmin(type);
+    });
+    card.addEventListener("focusin", () => {
+      setActivePreviewIndex(type, index);
+      renderPreview(type);
+      updatePreviewedCard(type);
+    });
+    card.addEventListener("click", () => {
+      setActivePreviewIndex(type, index);
+      renderPreview(type);
+      updatePreviewedCard(type);
     });
 
     actions.append(moveUpButton, moveDownButton, removeButton);
@@ -574,7 +603,7 @@ const createPreviewCard = (item, rows = []) => {
 };
 
 const renderNewsPreview = (preview) => {
-  const latestNews = sortByDateDescending(adminState.news)[0];
+  const latestNews = adminState.news[activePreviewIndexes.news] || sortByDateDescending(adminState.news)[0];
   preview.innerHTML = "";
 
   if (!latestNews) {
@@ -605,7 +634,9 @@ const renderNewsPreview = (preview) => {
 };
 
 const renderEventPreview = (preview) => {
-  const event = sortByDateAscending(adminState.events).find((item) => parseDateKey(item.date) >= getToday()) || adminState.events[0];
+  const event = adminState.events[activePreviewIndexes.events]
+    || sortByDateAscending(adminState.events).find((item) => parseDateKey(item.date) >= getToday())
+    || adminState.events[0];
   preview.innerHTML = "";
 
   if (!event) {
@@ -645,7 +676,7 @@ const renderEventPreview = (preview) => {
 
 const renderPreview = (type) => {
   const preview = document.querySelector(`[data-admin-preview="${type}"]`);
-  const firstItem = adminState[type][0];
+  const firstItem = adminState[type][activePreviewIndexes[type]] || adminState[type][0];
   preview.innerHTML = "";
 
   if (type === "news") {
