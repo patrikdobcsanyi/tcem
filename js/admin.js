@@ -108,11 +108,28 @@ const adminConfig = {
       { key: "date", label: "Datum", type: "date" },
       { key: "time", label: "Zeit", type: "time" },
       { key: "label", label: "Kategorie", type: "text" },
-      { key: "labelClass", label: "Kategorie CSS", type: "text" },
+      {
+        key: "labelClass",
+        label: "Kategorie Stil",
+        type: "select",
+        options: [
+          { value: "", label: "Standard" },
+          { value: "junior", label: "Junioren" },
+          { value: "challenge", label: "Team Challenge" },
+        ],
+      },
       { key: "title", label: "Titel", type: "text", wide: true },
       { key: "description", label: "Beschreibung", type: "textarea", wide: true },
       { key: "status", label: "Status", type: "text" },
-      { key: "statusClass", label: "Status CSS", type: "text" },
+      {
+        key: "statusClass",
+        label: "Status Stil",
+        type: "select",
+        options: [
+          { value: "", label: "Standard" },
+          { value: "away", label: "Auswaerts" },
+        ],
+      },
     ],
     emptyItem: {
       date: todayKey(),
